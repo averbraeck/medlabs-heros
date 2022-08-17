@@ -306,7 +306,7 @@ public class Covid19Progression extends DiseaseProgression
             person.setDiseasePhase(infected_asymptomatic);
             infected_asymptomatic.addPerson();
 
-            model.getSimulator().scheduleEventRel(distAsymptomaticToRecovery.getDuration(), TimeUnit.HOUR, this, person,
+            model.getSimulator().scheduleEventRel(this.distAsymptomaticToRecovery.getDuration(), TimeUnit.HOUR, this, person,
                     "changePhase", new Object[] { recovered });
             return;
         }
@@ -405,8 +405,6 @@ public class Covid19Progression extends DiseaseProgression
 
         else if (nextPhase == recovered)
         {
-            this.model.getPersonMonitor().reportDeathPerson(person);
-
             person.getDiseasePhase().removePerson();
             person.setDiseasePhase(recovered);
             recovered.addPerson();
