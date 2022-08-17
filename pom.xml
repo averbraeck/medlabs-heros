@@ -21,6 +21,11 @@
       <artifactId>medlabs</artifactId>
       <version>2.01.00</version>
     </dependency>
+    <dependency>
+      <groupId>dsol</groupId>
+      <artifactId>dsol-animation-gis-osm</artifactId>
+      <version>3.08.01</version>
+    </dependency>
   </dependencies>
 
   <build>
