@@ -1,5 +1,6 @@
 package eu.heros.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ import eu.heros.person.UniversityStudent;
 import eu.heros.person.WeekendWorker;
 import eu.heros.person.Worker;
 import nl.tudelft.simulation.dsol.SimRuntimeException;
-import nl.tudelft.simulation.dsol.animation.gis.D2.GisRenderable2D;
+import nl.tudelft.simulation.dsol.animation.gis.GisRenderable2D;
+import nl.tudelft.simulation.dsol.animation.gis.osm.OsmFileCsvParser;
+import nl.tudelft.simulation.dsol.animation.gis.osm.OsmRenderable2D;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterDouble;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterException;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterInteger;
@@ -133,10 +136,22 @@ public class HerosModel extends AbstractMedlabsModel
         if (isInteractive())
         {
             // read the GIS map
-            URL gisURL = URLResource.getResource(getBasePath() + "/gis/map.xml");
-            System.err.println("GIS-map file: " + gisURL.toString());
-            this.gisMap = new GisRenderable2D(getSimulator(), gisURL);
-            // TODO: work on x/y ratio for this latitude
+            // URL gisURL = URLResource.getResource(getBasePath() + "/gis/map.xml");
+            // this.gisMap = new GisRenderable2D(getSimulator(), gisURL);
+        	
+            URL csvUrl = URLResource.getResource(getBasePath() + "/thehague.osm.csv");
+            System.out.println("GIS definitions file: " + csvUrl.toString());
+            URL osmUrl = URLResource.getResource(getBasePath() + "/thehague.osm.pbf");
+            System.out.println("GIS data file: " + osmUrl.toString());
+            try
+            {
+                this.gisMap = new OsmRenderable2D(getSimulator().getReplication(),
+                        OsmFileCsvParser.parseMapFile(csvUrl, osmUrl, "The Hague"));
+            }
+            catch (IOException exception)
+            {
+                throw new SimRuntimeException(exception);
+            }
         }
         else
         {
