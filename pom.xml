@@ -13,6 +13,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
+
+    <maven.compiler.version>3.10.1</maven.compiler.version>
+    <maven.resources.version>3.3.0</maven.resources.version>
   </properties>
 
   <dependencies>
@@ -29,16 +32,35 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <directory>target</directory>
+    <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+    <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+    <outputDirectory>${basedir}/target/classes</outputDirectory>
+    <testOutputDirectory> ${basedir}/target/test-classes</testOutputDirectory>
+
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
+        <directory>${basedir}/src/main/resources</directory>
+        <targetPath>${project.build.directory}/classes/resources</targetPath>
+        <includes>
+          <include>**/*</include>
+        </includes>
       </resource>
     </resources>
     <testResources>
       <testResource>
-        <directory>src/test/resources</directory>
+        <directory>${basedir}/src/test/resources</directory>
+        <targetPath>${project.build.directory}/test-classes/resources</targetPath>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>${basedir}/src/main/resources</directory>
+        <targetPath>${project.build.directory}/test-classes/resources</targetPath>
+        <includes>
+          <include>**/*</include>
+        </includes>
       </testResource>
     </testResources>
 
@@ -63,12 +85,64 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>${maven.compiler.version}</version>
         <configuration>
-          <!-- or whatever version you use -->
-          <source>11</source>
-          <target>11</target>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven.resources.version}</version>
+        <executions>
+          <execution>
+            <id>default-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/main/resources</directory>
+                </resource>
+              </resources>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testResources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/test/resources</directory>
+                </resource>
+              </resources>
+              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>testResources main</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/main/resources</directory>
+                </resource>
+              </resources>
+              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
