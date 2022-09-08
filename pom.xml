@@ -147,4 +147,12 @@
     </plugins>
   </build>
 
+  <repositories>
+    <repository>
+      <name>DSOL Public Repository</name>
+      <id>dsol</id>
+      <url>https://simulation.tudelft.nl/maven</url>
+    </repository>
+  </repositories>
+
 </project>
