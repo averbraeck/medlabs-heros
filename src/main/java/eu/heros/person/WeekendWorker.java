@@ -1,6 +1,3 @@
-/**
- * 
- */
 package eu.heros.person;
 
 import nl.tudelft.simulation.medlabs.model.MedlabsModelInterface;
@@ -36,7 +33,6 @@ public class WeekendWorker extends IdxWorker
      *            pattern that the person will use
      * @param workLocationId int; the location index of the work location, relative to the workTypeIndex
      */
-    @SuppressWarnings("checkstyle:parameternumber")
     public WeekendWorker(final MedlabsModelInterface model, final int id, final boolean genderFemale, final byte age,
             final int homeLocationId, final short weekPatternIndex, final int workLocationId)
     {

@@ -1,4 +1,3 @@
-
 package eu.heros.person;
 
 import nl.tudelft.simulation.medlabs.model.MedlabsModelInterface;
@@ -34,7 +33,6 @@ public class UniversityStudent extends IdxStudent
      *            pattern that the person will use
      * @param schoolLocationId int; the location index of the school, relative to the schoolTypeIndex
      */
-    @SuppressWarnings("checkstyle:parameternumber")
     public UniversityStudent(final MedlabsModelInterface model, final int id, final boolean genderFemale, final byte age,
             final int homeLocationId, final short weekPatternIndex, final int schoolLocationId)
     {

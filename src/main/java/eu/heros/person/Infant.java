@@ -1,4 +1,3 @@
-
 package eu.heros.person;
 
 import nl.tudelft.simulation.medlabs.model.MedlabsModelInterface;
@@ -33,7 +32,6 @@ public class Infant extends IdxPerson
      * @param weekPatternIndex short; the index of the standard week pattern for the person; this is also the initial week
      *            pattern that the person will use
      */
-    @SuppressWarnings("checkstyle:parameternumber")
     public Infant(final MedlabsModelInterface model, final int id, final boolean genderFemale, final byte age,
             final int homeLocationId, final short weekPatternIndex)
     {

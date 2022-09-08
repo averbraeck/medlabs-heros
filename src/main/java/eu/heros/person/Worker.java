@@ -1,13 +1,10 @@
-/**
- * 
- */
 package eu.heros.person;
 
 import nl.tudelft.simulation.medlabs.model.MedlabsModelInterface;
 import nl.tudelft.simulation.medlabs.person.index.IdxWorker;
 
 /**
- * Worker.java.
+ * Worker who has a workplace in the central city.
  * <p>
  * Copyright (c) 2020-2020 Delft University of Technology, Jaffalaan 5, 2628 BX Delft, the Netherlands. All rights reserved. The
  * code is part of the HERoS project (Health Emergency Response in Interconnected Systems), which builds on the MEDLABS project.
@@ -36,7 +33,6 @@ public class Worker extends IdxWorker
      *            pattern that the person will use
      * @param workLocationId int; the location index of the work location, relative to the workTypeIndex
      */
-    @SuppressWarnings("checkstyle:parameternumber")
     public Worker(final MedlabsModelInterface model, final int id, final boolean genderFemale, final byte age,
             final int homeLocationId, final short weekPatternIndex, final int workLocationId)
     {

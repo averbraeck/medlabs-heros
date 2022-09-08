@@ -227,7 +227,6 @@ public class Covid19Progression extends DiseaseProgression
      * @param age
      * @return probDeath
      */
-    @SuppressWarnings("checkstyle:needbraces")
     private double getProbDeath(final int age)
     {
         switch (age / 10)
@@ -263,7 +262,6 @@ public class Covid19Progression extends DiseaseProgression
 
     /** {@inheritDoc} */
     @Override
-    @SuppressWarnings("checkstyle:methodlength")
     public void changeDiseasePhase(final Person person, final DiseasePhase nextPhase)
     {
         MedlabsModelInterface model = person.getModel();
