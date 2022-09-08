@@ -33,8 +33,8 @@ public class WorkerSatelliteToSatellite extends IdxWorker
      *            pattern that the person will use
      * @param workLocationId int; the location index of the work location, relative to the workTypeIndex
      */
-    public WorkerSatelliteToSatellite(final MedlabsModelInterface model, final int id, final boolean genderFemale, final byte age,
-            final int homeLocationId, final short weekPatternIndex, final int workLocationId)
+    public WorkerSatelliteToSatellite(final MedlabsModelInterface model, final int id, final boolean genderFemale,
+            final byte age, final int homeLocationId, final short weekPatternIndex, final int workLocationId)
     {
         super(model, id, genderFemale, age, homeLocationId, weekPatternIndex, workLocationId);
     }

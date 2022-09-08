@@ -283,13 +283,13 @@ public class Covid19Progression extends DiseaseProgression
             if (model.getU01().draw() < this.probabilityAsymptomatic)
             {
                 model.getSimulator().scheduleEventRel(incubationPeriod, this, person, "changePhase",
-                        new Object[] { Covid19Progression.infected_asymptomatic });
+                        new Object[] {Covid19Progression.infected_asymptomatic});
                 return;
             }
             else
             {
                 model.getSimulator().scheduleEventRel(incubationPeriod, this, person, "changePhase",
-                        new Object[] { Covid19Progression.infected_symptomatic });
+                        new Object[] {Covid19Progression.infected_symptomatic});
                 return;
             }
         }
@@ -305,7 +305,7 @@ public class Covid19Progression extends DiseaseProgression
             infected_asymptomatic.addPerson();
 
             model.getSimulator().scheduleEventRel(this.distAsymptomaticToRecovery.getDuration(), TimeUnit.HOUR, this, person,
-                    "changePhase", new Object[] { recovered });
+                    "changePhase", new Object[] {recovered});
             return;
         }
 
@@ -321,10 +321,10 @@ public class Covid19Progression extends DiseaseProgression
 
             if (this.model.getU01().draw() < getProbHospitalization(person.getAge()))
                 model.getSimulator().scheduleEventRel(this.periodSymptomaticToHospitalized, TimeUnit.HOUR, this, person,
-                        "changePhase", new Object[] { hospitalized });
+                        "changePhase", new Object[] {hospitalized});
             else
                 model.getSimulator().scheduleEventRel(this.distSymptomaticToRecovery.getDuration(), TimeUnit.HOUR, this, person,
-                        "changePhase", new Object[] { recovered });
+                        "changePhase", new Object[] {recovered});
             return;
         }
 
@@ -344,7 +344,7 @@ public class Covid19Progression extends DiseaseProgression
             {
                 // Person goes to ICU
                 model.getSimulator().scheduleEventRel(this.periodHospitalizedToICU, TimeUnit.HOUR, this, person, "changePhase",
-                        new Object[] { icu });
+                        new Object[] {icu});
                 return;
             }
 
@@ -356,14 +356,14 @@ public class Covid19Progression extends DiseaseProgression
                 if (this.model.getU01().draw() < probDeath)
                 {
                     model.getSimulator().scheduleEventRel(this.periodHospitalizedToDeath, TimeUnit.HOUR, this, person,
-                            "changePhase", new Object[] { dead });
+                            "changePhase", new Object[] {dead});
                     return;
                 }
 
                 else
                 {
                     model.getSimulator().scheduleEventRel(this.periodHospitalizedToRecovery, TimeUnit.HOUR, this, person,
-                            "changePhase", new Object[] { recovered });
+                            "changePhase", new Object[] {recovered});
                     return;
                 }
             }
@@ -385,14 +385,14 @@ public class Covid19Progression extends DiseaseProgression
             if (this.model.getU01().draw() < probDeath)
             {
                 model.getSimulator().scheduleEventRel(this.periodICUToDeath, TimeUnit.HOUR, this, person, "changePhase",
-                        new Object[] { dead });
+                        new Object[] {dead});
                 return;
             }
 
             else
             {
                 model.getSimulator().scheduleEventRel(this.periodICUToRecovery, TimeUnit.HOUR, this, person, "changePhase",
-                        new Object[] { recovered });
+                        new Object[] {recovered});
                 return;
             }
         }

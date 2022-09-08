@@ -138,7 +138,7 @@ public class HerosModel extends AbstractMedlabsModel
             // read the GIS map
             // URL gisURL = URLResource.getResource(getBasePath() + "/gis/map.xml");
             // this.gisMap = new GisRenderable2D(getSimulator(), gisURL);
-        	
+
             URL csvUrl = URLResource.getResource(getBasePath() + "/thehague.osm.csv");
             System.out.println("GIS definitions file: " + csvUrl.toString());
             URL osmUrl = URLResource.getResource(getBasePath() + "/thehague.osm.pbf");
