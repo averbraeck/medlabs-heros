@@ -1,5 +1,6 @@
 package eu.heros.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -125,6 +126,28 @@ public class HerosModel extends AbstractMedlabsModel
         return this.extent;
     }
 
+    private File getFileFromParam(final String param)
+    {
+        String paramValue = getParameterValue(param).trim();
+        String basePath = getBasePath();
+        if (paramValue.length() > 0)
+        {
+            File file = new File(basePath + "/" + paramValue);
+            if (file != null && file.exists() && !file.isDirectory())
+            {
+                System.out.println("Used " + param + " = " + file.getAbsolutePath());
+                return file.getAbsoluteFile();
+            }
+            file = new File(paramValue);
+            if (file != null && file.exists() && !file.isDirectory())
+            {
+                System.out.println("Used " + param + " = " + file.getAbsolutePath());
+                return file.getAbsoluteFile();
+            }
+        }
+        return null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void constructModel() throws SimRuntimeException
@@ -138,19 +161,34 @@ public class HerosModel extends AbstractMedlabsModel
             // read the GIS map
             // URL gisURL = URLResource.getResource(getBasePath() + "/gis/map.xml");
             // this.gisMap = new GisRenderable2D(getSimulator(), gisURL);
-
-            URL csvUrl = URLResource.getResource(getBasePath() + "/thehague.osm.csv");
-            System.out.println("GIS definitions file: " + csvUrl.toString());
-            URL osmUrl = URLResource.getResource(getBasePath() + "/thehague.osm.pbf");
-            System.out.println("GIS data file: " + osmUrl.toString());
-            try
+            File csvFile = getFileFromParam("generic.osmControlFile");
+            if (csvFile == null)
             {
-                this.gisMap = new OsmRenderable2D(getSimulator().getReplication(),
-                        OsmFileCsvParser.parseMapFile(csvUrl, osmUrl, "The Hague"));
+                System.err.println("Map control file not found -- no map");
             }
-            catch (IOException exception)
+            else
             {
-                throw new SimRuntimeException(exception);
+                URL csvUrl = URLResource.getResource(csvFile.getAbsolutePath());
+                System.out.println("GIS definitions file: " + csvUrl.toString());
+                File osmFile = getFileFromParam("generic.osmMapFile");
+                if (osmFile == null)
+                {
+                    System.err.println("Map file not found -- no map");
+                }
+                else
+                {
+                    URL osmUrl = URLResource.getResource(osmFile.getAbsolutePath());
+                    System.out.println("GIS map file: " + osmUrl.toString());
+                    try
+                    {
+                        this.gisMap = new OsmRenderable2D(getSimulator().getReplication(),
+                                OsmFileCsvParser.parseMapFile(csvUrl, osmUrl, "The Hague"));
+                    }
+                    catch (IOException exception)
+                    {
+                        throw new SimRuntimeException(exception);
+                    }
+                }
             }
         }
         else
@@ -311,12 +349,16 @@ public class HerosModel extends AbstractMedlabsModel
         InputParameterMap genericMap = (InputParameterMap) root.get("generic");
         genericMap.add(new InputParameterString("PersonFilePath", "path and name for the person file",
                 "blank means standard people.csv.gz file", "", 1.1));
-        genericMap.add(new InputParameterString("LocationsFilePath", "path and namefor the locations file",
+        genericMap.add(new InputParameterString("LocationsFilePath", "path and name for the locations file",
                 "blank means standard locations.csv.gz file", "", 1.2));
-        genericMap.add(new InputParameterString("LocationTypesFilePath", "path and namefor the locationtypes file",
+        genericMap.add(new InputParameterString("LocationTypesFilePath", "path and name for the locationtypes file",
                 "blank means standard locationtypes.csv file", "", 1.3));
-        genericMap.add(new InputParameterString("ActivityFilePath", "path and namefor the activitypatterns file",
+        genericMap.add(new InputParameterString("ActivityFilePath", "path and name for the activitypatterns file",
                 "blank means standard activityschedules.xlsx file", "", 1.4));
+        genericMap.add(new InputParameterString("osmControlFile", "path and name for the OSM control file",
+                "blank means no map for animation", "", 1.5));
+        genericMap.add(new InputParameterString("osmMapFile", "path and name for the OSM map file",
+                "blank means no map for animation", "", 1.6));
     }
 
     /**

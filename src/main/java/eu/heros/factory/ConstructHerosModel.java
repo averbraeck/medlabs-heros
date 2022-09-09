@@ -106,9 +106,7 @@ public class ConstructHerosModel
     /** temporary storage of the weekday patterns while building. */
     private Map<String, Map<String, DayPattern>> weekDayPattern = new HashMap<>();
 
-    /**
-     * map to allocate households to the right sublocation. The map maps homeId via householdId to sublocationIndex.
-     */
+    /** map to allocate households to the right sublocation. The map maps homeId via householdId to sublocationIndex. */
     private Map<Integer, Map<Integer, Short>> householdMap = new HashMap<>();
 
     /**
@@ -118,26 +116,7 @@ public class ConstructHerosModel
     public ConstructHerosModel(final HerosModel model)
     {
         this.model = model;
-        URL baseURL = URLResource.getResource(this.model.getParameterValue("generic.InputPath"));
-        File file = null;
-        if (baseURL != null)
-        {
-            file = new File(baseURL.getPath());
-        }
-        if (file == null || !file.exists())
-        {
-            file = new File(this.model.getParameterValue("generic.InputPath"));
-        }
-        if (file == null || !file.exists())
-        {
-            file = new File(URLResource.getResource("/").getPath() + this.model.getParameterValue("generic.InputPath"));
-        }
-        if (file == null || !file.exists() || !file.isDirectory())
-        {
-            System.err.println("could not find base path as specified in generic.InputPath parameter with value: "
-                    + this.model.getParameterValue("generic.InputPath"));
-            System.exit(-1);
-        }
+        File file = getPathFromParam("generic.InputPath", true);
         model.setBasePath(file.getAbsolutePath());
         try
         {
@@ -163,6 +142,71 @@ public class ConstructHerosModel
         }
     }
 
+    private File getPathFromParam(final String param, final boolean dir)
+    {
+        String paramValue = this.model.getParameterValue(param);
+        URL baseURL = URLResource.getResource(paramValue);
+        File file = null;
+        if (baseURL != null)
+        {
+            file = new File(baseURL.getPath());
+        }
+        if (file == null || !file.exists())
+        {
+            file = new File(paramValue);
+        }
+        if (file == null || !file.exists())
+        {
+            file = new File(URLResource.getResource("/").getPath() + paramValue);
+        }
+        if (file == null || !file.exists())
+        {
+            System.err.println("could not find path as specified in parameter " + param + " with value: " + paramValue);
+            System.exit(-1);
+        }
+        if (file.isDirectory() && !dir)
+        {
+            System.err.println(
+                    "parameter " + param + " with value: " + paramValue + " should point to a file, but it is a directory");
+            System.exit(-1);
+        }
+        if (!file.isDirectory() && dir)
+        {
+            System.err.println(
+                    "parameter " + param + " with value: " + paramValue + " should point to a directory, but it is a file");
+            System.exit(-1);
+        }
+        return file;
+    }
+
+    private File getFileFromParam(final String param, final String defaultFileName)
+    {
+        String paramValue = this.model.getParameterValue(param).trim();
+        String basePath = this.model.getBasePath();
+        if (paramValue.length() > 0)
+        {
+            File file = new File(basePath + "/" + paramValue);
+            if (file != null && file.exists() && !file.isDirectory())
+            {
+                System.out.println("Used " + param + " = " + file.getAbsolutePath());
+                return file.getAbsoluteFile();
+            }
+            file = new File(paramValue);
+            if (file != null && file.exists() && !file.isDirectory())
+            {
+                System.out.println("Used " + param + " = " + file.getAbsolutePath());
+                return file.getAbsoluteFile();
+            }
+        }
+        File file = new File(basePath + "/" + defaultFileName);
+        if (file != null && file.exists() && !file.isDirectory())
+        {
+            System.out.println("Used " + param + " = " + file.getAbsolutePath());
+            return file.getAbsoluteFile();
+        }
+        throw new RuntimeException("could not find path as specified in parameter " + param + " with value: " + paramValue);
+    }
+
     @SuppressWarnings("unchecked")
     private void readLocationTypeTable() throws Exception
     {
@@ -170,22 +214,7 @@ public class ConstructHerosModel
         this.model.getLocationTypeNameMap().remove("house");
         byte id = 0;
 
-        String path = this.model.getBasePath() + "/locationtypes.csv";
-        if (this.model.getParameterValue("generic.LocationTypesFilePath").trim().length() > 0)
-        {
-            path = this.model.getParameterValue("generic.LocationTypesFilePath").trim();
-        }
-        File file = new File(path);
-        if (!file.exists() || file.isDirectory())
-        {
-            System.err.println("Locationtypes file not found at " + path);
-            System.exit(-1);
-        }
-        else
-        {
-            System.out.println("Locations types file: " + file.getAbsolutePath());
-        }
-
+        File path = getFileFromParam("generic.LocationTypesFilePath", "/locationtypes.csv");
         Reader reader = new InputStreamReader(new FileInputStream(path));
         CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
         CsvRow row;
@@ -227,21 +256,7 @@ public class ConstructHerosModel
      */
     private void readLocationTable() throws Exception
     {
-        String path = this.model.getBasePath() + "/locations.csv.gz";
-        if (this.model.getParameterValue("generic.LocationsFilePath").trim().length() > 0)
-        {
-            path = this.model.getParameterValue("generic.LocationsFilePath").trim();
-        }
-        File file = new File(path);
-        if (!file.exists() || file.isDirectory())
-        {
-            System.err.println("Locations file not found at " + path);
-            System.exit(-1);
-        }
-        else
-        {
-            System.out.println("Locations file: " + file.getAbsolutePath());
-        }
+        File path = getFileFromParam("generic.LocationsFilePath", "locations.csv.gz");
         Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(path)));
         CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
         CsvRow row;
@@ -355,22 +370,7 @@ public class ConstructHerosModel
      */
     private void readPersonTable() throws Exception
     {
-        String path = this.model.getBasePath() + "/people.csv.gz";
-        if (this.model.getParameterValue("generic.PersonFilePath").trim().length() > 0)
-        {
-            path = this.model.getParameterValue("generic.PersonFilePath").trim();
-        }
-        File file = new File(path);
-        if (!file.exists() || file.isDirectory())
-        {
-            System.err.println("Person file not found at " + path);
-            System.exit(-1);
-        }
-        else
-        {
-            System.out.println("Persons file: " + file.getAbsolutePath());
-        }
-
+        File path = getFileFromParam("generic.PersonFilePath", "people.csv.gz");
         Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(path)));
         CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
         CsvRow row;
@@ -440,13 +440,13 @@ public class ConstructHerosModel
                             + row.getOriginalLineNumber() + "\n" + row.toString());
                     continue;
                 }
-//                if (this.model.getLocationMap().get(homeId).getLocationTypeId() != this.model.getLocationTypeHouse()
-//                        .getLocationTypeId())
-//                {
-//                    System.err.println("homeId " + homeId + " not an Accommodation in the location map on line "
-//                            + row.getOriginalLineNumber() + "\n" + row.toString());
-//                    continue;
-//                }
+                // if (this.model.getLocationMap().get(homeId).getLocationTypeId() != this.model.getLocationTypeHouse()
+                // .getLocationTypeId())
+                // {
+                // System.err.println("homeId " + homeId + " not an Accommodation in the location map on line "
+                // + row.getOriginalLineNumber() + "\n" + row.toString());
+                // continue;
+                // }
 
                 // create sublocationIndex for the home
                 short homeSubLocationIndex;
@@ -662,19 +662,8 @@ public class ConstructHerosModel
      */
     private void readWeekpatternData() throws Exception
     {
-        String path = this.model.getBasePath() + "/activityschedules.xlsx";
-        if (this.model.getParameterValue("generic.ActivityFilePath").trim().length() > 0)
-        {
-            path = this.model.getParameterValue("generic.ActivityFilePath").trim();
-        }
-        File file = new File(path);
-        if (!file.exists() || file.isDirectory())
-        {
-            System.err.println("Activity pattern file not found at " + path);
-            System.exit(-1);
-        }
-
-        InputStream fis = URLResource.getResourceAsStream(path);
+        File path = getFileFromParam("generic.ActivityFilePath", "activityschedules.xlsx");
+        InputStream fis = URLResource.getResourceAsStream(path.getAbsolutePath());
         XSSFWorkbook wbST = new XSSFWorkbook(fis);
         XSSFSheet sheet = wbST.getSheet("activityschedules");
 
@@ -799,33 +788,33 @@ public class ConstructHerosModel
             }
         }
 
-//        for (String weekPatternKey : this.weekDayPattern.keySet())
-//        {
-//            Map<String, DayPattern> dayActivitiesMap = this.weekDayPattern.get(weekPatternKey);
-//            if (!dayActivitiesMap.containsKey("Tuesday"))
-//                System.err.println("Tuesday missing for week pattern " + weekPatternKey);
-//            if (!dayActivitiesMap.containsKey("Friday"))
-//                System.err.println("Friday missing for week pattern " + weekPatternKey);
-//            if (!dayActivitiesMap.containsKey("Saturday"))
-//                System.err.println("Saturday missing for week pattern " + weekPatternKey);
-//            if (!dayActivitiesMap.containsKey("Sunday"))
-//                System.err.println("Sunday missing for week pattern " + weekPatternKey);
-//            DayPattern[] dayPatterns = new DayPattern[7];
-//            
-//            dayPatterns[0] = dayActivitiesMap.get("Tuesday");
-//            
-//            dayPatterns[0] = dayActivitiesMap.get("Tuesday");
-//            
-//            dayPatterns[1] = dayPatterns[0];
-//            dayPatterns[2] = dayPatterns[0];
-//            dayPatterns[3] = dayPatterns[0];
-//            dayPatterns[4] = dayActivitiesMap.get("Friday") == null ? dayPatterns[0] : dayActivitiesMap.get("Friday");
-//            dayPatterns[5] = dayActivitiesMap.get("Saturday") == null ? dayPatterns[0] : dayActivitiesMap.get("Saturday");
-//            dayPatterns[6] = dayActivitiesMap.get("Sunday") == null ? dayPatterns[0] : dayActivitiesMap.get("Sunday");
-//            new WeekDayPattern(this.model, weekPatternKey, dayPatterns);
-//            // patterns are stored automatically in the maps of the model
-//        }
-        
+        // for (String weekPatternKey : this.weekDayPattern.keySet())
+        // {
+        // Map<String, DayPattern> dayActivitiesMap = this.weekDayPattern.get(weekPatternKey);
+        // if (!dayActivitiesMap.containsKey("Tuesday"))
+        // System.err.println("Tuesday missing for week pattern " + weekPatternKey);
+        // if (!dayActivitiesMap.containsKey("Friday"))
+        // System.err.println("Friday missing for week pattern " + weekPatternKey);
+        // if (!dayActivitiesMap.containsKey("Saturday"))
+        // System.err.println("Saturday missing for week pattern " + weekPatternKey);
+        // if (!dayActivitiesMap.containsKey("Sunday"))
+        // System.err.println("Sunday missing for week pattern " + weekPatternKey);
+        // DayPattern[] dayPatterns = new DayPattern[7];
+        //
+        // dayPatterns[0] = dayActivitiesMap.get("Tuesday");
+        //
+        // dayPatterns[0] = dayActivitiesMap.get("Tuesday");
+        //
+        // dayPatterns[1] = dayPatterns[0];
+        // dayPatterns[2] = dayPatterns[0];
+        // dayPatterns[3] = dayPatterns[0];
+        // dayPatterns[4] = dayActivitiesMap.get("Friday") == null ? dayPatterns[0] : dayActivitiesMap.get("Friday");
+        // dayPatterns[5] = dayActivitiesMap.get("Saturday") == null ? dayPatterns[0] : dayActivitiesMap.get("Saturday");
+        // dayPatterns[6] = dayActivitiesMap.get("Sunday") == null ? dayPatterns[0] : dayActivitiesMap.get("Sunday");
+        // new WeekDayPattern(this.model, weekPatternKey, dayPatterns);
+        // // patterns are stored automatically in the maps of the model
+        // }
+
         // 1. Change Tuesday to Monday.
         // 2. Remove duplicated assignment of dayPatterns[0]
         for (String weekPatternKey : this.weekDayPattern.keySet())
@@ -833,14 +822,14 @@ public class ConstructHerosModel
             Map<String, DayPattern> dayActivitiesMap = this.weekDayPattern.get(weekPatternKey);
             if (!dayActivitiesMap.containsKey("Monday"))
                 System.err.println("Monday missing for week pattern " + weekPatternKey);
-//            if (!dayActivitiesMap.containsKey("Friday"))
-//                System.err.println("Friday missing for week pattern " + weekPatternKey);
-//            if (!dayActivitiesMap.containsKey("Saturday"))
-//                System.err.println("Saturday missing for week pattern " + weekPatternKey);
-//            if (!dayActivitiesMap.containsKey("Sunday"))
-//                System.err.println("Sunday missing for week pattern " + weekPatternKey);
+            // if (!dayActivitiesMap.containsKey("Friday"))
+            // System.err.println("Friday missing for week pattern " + weekPatternKey);
+            // if (!dayActivitiesMap.containsKey("Saturday"))
+            // System.err.println("Saturday missing for week pattern " + weekPatternKey);
+            // if (!dayActivitiesMap.containsKey("Sunday"))
+            // System.err.println("Sunday missing for week pattern " + weekPatternKey);
             DayPattern[] dayPatterns = new DayPattern[7];
-            
+
             dayPatterns[0] = dayActivitiesMap.get("Monday");
             dayPatterns[1] = dayPatterns[0];
             dayPatterns[2] = dayPatterns[0];
