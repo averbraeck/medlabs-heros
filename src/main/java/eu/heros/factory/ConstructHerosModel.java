@@ -322,7 +322,7 @@ public class ConstructHerosModel
     private void checkBasicWeekPatterns() throws MedlabsException
     {
         boolean err = false;
-        for (String policy : new String[] {"0", "1", "2"})
+        for (String policy : new String[] {"0"}) // {"0", "1", "2"})
         {
             DiseaseProgression disease = this.model.getDiseaseProgression();
             for (DiseasePhase diseasePhase : disease.getDiseasePhases())
@@ -799,19 +799,49 @@ public class ConstructHerosModel
             }
         }
 
+//        for (String weekPatternKey : this.weekDayPattern.keySet())
+//        {
+//            Map<String, DayPattern> dayActivitiesMap = this.weekDayPattern.get(weekPatternKey);
+//            if (!dayActivitiesMap.containsKey("Tuesday"))
+//                System.err.println("Tuesday missing for week pattern " + weekPatternKey);
+//            if (!dayActivitiesMap.containsKey("Friday"))
+//                System.err.println("Friday missing for week pattern " + weekPatternKey);
+//            if (!dayActivitiesMap.containsKey("Saturday"))
+//                System.err.println("Saturday missing for week pattern " + weekPatternKey);
+//            if (!dayActivitiesMap.containsKey("Sunday"))
+//                System.err.println("Sunday missing for week pattern " + weekPatternKey);
+//            DayPattern[] dayPatterns = new DayPattern[7];
+//            
+//            dayPatterns[0] = dayActivitiesMap.get("Tuesday");
+//            
+//            dayPatterns[0] = dayActivitiesMap.get("Tuesday");
+//            
+//            dayPatterns[1] = dayPatterns[0];
+//            dayPatterns[2] = dayPatterns[0];
+//            dayPatterns[3] = dayPatterns[0];
+//            dayPatterns[4] = dayActivitiesMap.get("Friday") == null ? dayPatterns[0] : dayActivitiesMap.get("Friday");
+//            dayPatterns[5] = dayActivitiesMap.get("Saturday") == null ? dayPatterns[0] : dayActivitiesMap.get("Saturday");
+//            dayPatterns[6] = dayActivitiesMap.get("Sunday") == null ? dayPatterns[0] : dayActivitiesMap.get("Sunday");
+//            new WeekDayPattern(this.model, weekPatternKey, dayPatterns);
+//            // patterns are stored automatically in the maps of the model
+//        }
+        
+        // 1. Change Tuesday to Monday.
+        // 2. Remove duplicated assignment of dayPatterns[0]
         for (String weekPatternKey : this.weekDayPattern.keySet())
         {
             Map<String, DayPattern> dayActivitiesMap = this.weekDayPattern.get(weekPatternKey);
-            if (!dayActivitiesMap.containsKey("Tuesday"))
-                System.err.println("Tuesday missing for week pattern " + weekPatternKey);
-            if (!dayActivitiesMap.containsKey("Friday"))
-                System.err.println("Friday missing for week pattern " + weekPatternKey);
-            if (!dayActivitiesMap.containsKey("Saturday"))
-                System.err.println("Saturday missing for week pattern " + weekPatternKey);
-            if (!dayActivitiesMap.containsKey("Sunday"))
-                System.err.println("Sunday missing for week pattern " + weekPatternKey);
+            if (!dayActivitiesMap.containsKey("Monday"))
+                System.err.println("Monday missing for week pattern " + weekPatternKey);
+//            if (!dayActivitiesMap.containsKey("Friday"))
+//                System.err.println("Friday missing for week pattern " + weekPatternKey);
+//            if (!dayActivitiesMap.containsKey("Saturday"))
+//                System.err.println("Saturday missing for week pattern " + weekPatternKey);
+//            if (!dayActivitiesMap.containsKey("Sunday"))
+//                System.err.println("Sunday missing for week pattern " + weekPatternKey);
             DayPattern[] dayPatterns = new DayPattern[7];
-            dayPatterns[0] = dayActivitiesMap.get("Tuesday");
+            
+            dayPatterns[0] = dayActivitiesMap.get("Monday");
             dayPatterns[1] = dayPatterns[0];
             dayPatterns[2] = dayPatterns[0];
             dayPatterns[3] = dayPatterns[0];
@@ -819,7 +849,6 @@ public class ConstructHerosModel
             dayPatterns[5] = dayActivitiesMap.get("Saturday") == null ? dayPatterns[0] : dayActivitiesMap.get("Saturday");
             dayPatterns[6] = dayActivitiesMap.get("Sunday") == null ? dayPatterns[0] : dayActivitiesMap.get("Sunday");
             new WeekDayPattern(this.model, weekPatternKey, dayPatterns);
-            // patterns are stored automatically in the maps of the model
         }
     }
 
