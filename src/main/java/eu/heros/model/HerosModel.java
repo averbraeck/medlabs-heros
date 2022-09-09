@@ -159,8 +159,6 @@ public class HerosModel extends AbstractMedlabsModel
         if (isInteractive())
         {
             // read the GIS map
-            // URL gisURL = URLResource.getResource(getBasePath() + "/gis/map.xml");
-            // this.gisMap = new GisRenderable2D(getSimulator(), gisURL);
             File csvFile = getFileFromParam("generic.osmControlFile");
             if (csvFile == null)
             {

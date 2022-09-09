@@ -91,7 +91,8 @@ public class HerosApplication extends DSOLAnimationApplication
                 double runLengthDays = (double) model.getParameterValueInt("generic.RunLength");
                 long seed = model.getParameterValueLong("generic.Seed");
                 model.getSimulator().initialize(0.0, 0.0, runLengthDays * 24.0, model, seed);
-                Bounds2d mapBounds = model.getExtent(); // new Bounds2d(4.202, 4.482, 52.011, 52.133);
+                System.out.println(model.getExtent());
+                Bounds2d mapBounds = /*model.getExtent(); */ new Bounds2d(4.202, 4.482, 52.011, 52.133);
                 // DSOLAnimationGisTab gisTab =
                 // new DSOLAnimationGisTab(mapBounds, (SimpleAnimator) model.getSimulator());
                 MedlabsAnimationTab gisTab = new MedlabsAnimationTab(mapBounds, (SimpleAnimator) model.getSimulator());
