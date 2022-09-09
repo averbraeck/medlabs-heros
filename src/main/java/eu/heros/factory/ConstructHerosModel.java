@@ -440,13 +440,13 @@ public class ConstructHerosModel
                             + row.getOriginalLineNumber() + "\n" + row.toString());
                     continue;
                 }
-                if (this.model.getLocationMap().get(homeId).getLocationTypeId() != this.model.getLocationTypeHouse()
-                        .getLocationTypeId())
-                {
-                    System.err.println("homeId " + homeId + " not an Accommodation in the location map on line "
-                            + row.getOriginalLineNumber() + "\n" + row.toString());
-                    continue;
-                }
+//                if (this.model.getLocationMap().get(homeId).getLocationTypeId() != this.model.getLocationTypeHouse()
+//                        .getLocationTypeId())
+//                {
+//                    System.err.println("homeId " + homeId + " not an Accommodation in the location map on line "
+//                            + row.getOriginalLineNumber() + "\n" + row.toString());
+//                    continue;
+//                }
 
                 // create sublocationIndex for the home
                 short homeSubLocationIndex;
