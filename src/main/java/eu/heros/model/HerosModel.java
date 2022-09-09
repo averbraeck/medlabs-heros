@@ -24,6 +24,9 @@ import eu.heros.person.Unemployed;
 import eu.heros.person.UniversityStudent;
 import eu.heros.person.WeekendWorker;
 import eu.heros.person.Worker;
+import eu.heros.person.WorkerCityToSatellite;
+import eu.heros.person.WorkerSatelliteToCity;
+import eu.heros.person.WorkerSatelliteToSatellite;
 import nl.tudelft.simulation.dsol.SimRuntimeException;
 import nl.tudelft.simulation.dsol.animation.gis.GisRenderable2D;
 import nl.tudelft.simulation.dsol.animation.gis.osm.OsmFileCsvParser;
@@ -243,6 +246,9 @@ public class HerosModel extends AbstractMedlabsModel
         this.personTypes.put(UniversityStudent.class, "university student");
         this.personTypes.put(WeekendWorker.class, "weekend worker");
         this.personTypes.put(Worker.class, "worker");
+        this.personTypes.put(WorkerCityToSatellite.class, "worker city to satellite");
+        this.personTypes.put(WorkerSatelliteToCity.class, "worker satellite to city");
+        this.personTypes.put(WorkerSatelliteToSatellite.class, "worker satellite to satellite");
     }
 
     @Override
@@ -456,8 +462,18 @@ public class HerosModel extends AbstractMedlabsModel
     {
         if (person.getDiseasePhase().isDead())
             return;
-        person.setCurrentWeekPattern(getWeekPatternMap().get(getCurrentPolicy().getName() + "_"
-                + person.getDiseasePhase().getName() + "_" + this.personTypes.get(person.getClass())));
+        String diseasePhaseName = person.getDiseasePhase().getName();
+        String personTypeName = this.personTypes.get(person.getClass());
+        if (personTypeName == null)
+        {
+            throw new MedlabsRuntimeException("Person type name " + person.getClass() + " not found");
+        }
+        String weekPatternKey = getCurrentPolicy().getName() + "_" + diseasePhaseName + "_" + personTypeName;
+        if (getWeekPatternMap().get(weekPatternKey) == null)
+        {
+            throw new MedlabsRuntimeException("Week pattern key" + weekPatternKey + " not found in week pattern map");
+        }
+        person.setCurrentWeekPattern(getWeekPatternMap().get(weekPatternKey));
     }
 
     /**
