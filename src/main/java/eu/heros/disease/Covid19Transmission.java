@@ -160,9 +160,9 @@ public class Covid19Transmission extends DiseaseTransmission
                 if (person.getDiseasePhase().isIll())
                 {
                     double te = now - person.getExposureTime();
-                    if (te > this.t_e_min && te < this.t_e_mode)
+                    if (te >= this.t_e_min && te < this.t_e_mode)
                         sumTij += (te - this.t_e_min) / (this.t_e_mode - this.t_e_min);
-                    else if (te >= this.t_e_mode && te < this.t_e_mode)
+                    else if (te >= this.t_e_mode && te <= this.t_e_max)
                         sumTij += (this.t_e_max - te) / (this.t_e_max - this.t_e_mode);
                     // else the person is infected, but not yet or not anymore contagious
                 }
@@ -207,9 +207,9 @@ public class Covid19Transmission extends DiseaseTransmission
                 if (person.getDiseasePhase().isIll())
                 {
                     double te = now - person.getExposureTime();
-                    if (te > this.t_e_min && te < this.t_e_mode)
+                    if (te >= this.t_e_min && te < this.t_e_mode)
                         sumTij += te / (this.t_e_mode - this.t_e_min);
-                    else if (te >= this.t_e_mode && te < this.t_e_mode)
+                    else if (te >= this.t_e_mode && te <= this.t_e_max)
                         sumTij += 1.0 - te / (this.t_e_max - this.t_e_mode);
                     // else the person is infected, but not contagious
                 }
