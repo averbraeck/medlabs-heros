@@ -229,8 +229,8 @@ public class ConstructHerosModel
                 data = row.getFields();
                 String ltName = data.get(0);
                 String ltAniClassName = data.get(1);
-                boolean reproducible = data.get(2).equals("true");
-                boolean infectSub = data.get(3).equals("true");
+                boolean reproducible = data.get(2).toLowerCase().equals("true");
+                boolean infectSub = data.get(3).toLowerCase().equals("true");
                 double contagiousRateFactor = Double.parseDouble(data.get(5));
                 // Class<? extends Location> ltClass = (Class<? extends Location>)
                 // Class.forName(ltClassName);
