@@ -296,9 +296,8 @@ public class HerosModel extends AbstractMedlabsModel
                 "blank means no map for animation", "", 1.5));
         genericMap.add(new InputParameterString("osmMapFile", "path and name for the OSM map file",
                 "blank means no map for animation", "", 1.6));
-        genericMap
-                .add(new InputParameterString("generic.diseasePropertiesFile", "path and name for the disease properties file",
-                        "can be resource, absolute or relative", "/alpha.properties", 1.7));
+        genericMap.add(new InputParameterString("diseasePropertiesFile", "path and name for the disease properties file",
+                "can be resource, absolute or relative", "/alpha.properties", 1.7));
 
         InputParameterMap policyMap = (InputParameterMap) root.get("policies");
         policyMap.add(new InputParameterInteger("NumberInfected", "number of people infected at t=0", "(can be 0)", 0, 1.0));
@@ -350,29 +349,31 @@ public class HerosModel extends AbstractMedlabsModel
                 "Distribution, time in days", "Triangular(2.5, 3.4, 3.8)", 3.0));
         covidProgressionMap.add(new InputParameterString("PeriodAsymptomaticToRecovered",
                 "Period asymptomatic to recovered I(A)->R", "Distribution, time in days", "Triangular(7, 12, 14)", 4.0));
-        covidProgressionMap.add(
-                new InputParameterString("FractionSymptomaticToHospitalized", "Fraction symptomatic to hospitalized I(S)->I(H)",
-                        "Distribution, time in days", "age{0-29: 0.02, 30-49: 0.1, 50-59: 0.3, 60-80: 0.6, 80-100: 0.2", 5.0));
+        covidProgressionMap.add(new InputParameterString("FractionSymptomaticToHospitalized",
+                "Fraction symptomatic to hospitalized I(S)->I(H)", "Fraction, age{} map or gender{} map",
+                "age{0-29: 0.02, 30-49: 0.1, 50-59: 0.3, 60-80: 0.6, 80-100: 0.2}", 5.0));
         covidProgressionMap.add(new InputParameterString("PeriodSymptomaticToHospitalized",
                 "Period symptomatic to hospitalized I(S)->I(H)", "Distribution, time in days", "Triangular(5, 7.5, 10)", 6.0));
         covidProgressionMap.add(new InputParameterString("PeriodSymptomaticToRecovered",
                 "Period symptomatic to recovered I(S)->R", "Distribution, time in days", "Triangular(5, 7.5, 10)", 7.0));
         covidProgressionMap.add(new InputParameterString("FractionHospitalizedToICU", "Fraction hospitalized to ICU I(H)->I(I)",
-                "Distribution, time in days", "age{0-29: 0.05, 30-49: 0.02, 50-59: 0.05, 60-80: 0.15, 80-100: 0.0", 8.0));
+                "Fraction, age{} map or gender{} map", "age{0-29: 0.05, 30-49: 0.02, 50-59: 0.05, 60-80: 0.15, 80-100: 0.0}",
+                8.0));
         covidProgressionMap.add(new InputParameterString("FractionHospitalizedToDead", "Fraction hospitalized to dead I(H)->D",
-                "Distribution, time in days", "0.0", 9.0));
-        covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToICU",
-                "Period hospitalized to ICU I(H)->I(I)", "Distribution, time in days", "Triangular(3,8,14)", 10.0));
-        covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToDead",
-                "Period hospitalized to dead I(H)->D", "Distribution, time in days", "Triangular(3,8,14)", 11.0));
+                "Fraction, age{} map or gender{} map", "0.0", 9.0));
+        covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToICU", "Period hospitalized to ICU I(H)->I(I)",
+                "Distribution, time in days", "Triangular(3,8,14)", 10.0));
+        covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToDead", "Period hospitalized to dead I(H)->D",
+                "Distribution, time in days", "Triangular(3,8,14)", 11.0));
         covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToRecovered",
                 "Period hospitalized to recovered I(H)->R", "Distribution, time in days", "Triangular(3,8,14)", 12.0));
         covidProgressionMap.add(new InputParameterString("FractionICUToDead", "Fraction ICU to dead I(I)->D",
-                "Distribution, time in days", "age{0-49: 0, 50-59: 0.015, 60-69: 0.08, 70-79: 0.4, 80-100: 0.6}", 13.0));
-        covidProgressionMap.add(new InputParameterString("PeriodICUToDead",
-                "Period ICU to dead I(I)->D", "Distribution, time in days", "Triangular(1, 14, 30)", 14.0));
-        covidProgressionMap.add(new InputParameterString("PeriodICUToRecovered",
-                "Period ICU to recovered I(I)->R", "Distribution, time in days", "Triangular(10, 14, 30)", 15.0));
+                "Fraction, age{} map or gender{} map", "age{0-49: 0, 50-59: 0.015, 60-69: 0.08, 70-79: 0.4, 80-100: 0.6}",
+                13.0));
+        covidProgressionMap.add(new InputParameterString("PeriodICUToDead", "Period ICU to dead I(I)->D",
+                "Distribution, time in days", "Triangular(1, 14, 30)", 14.0));
+        covidProgressionMap.add(new InputParameterString("PeriodICUToRecovered", "Period ICU to recovered I(I)->R",
+                "Distribution, time in days", "Triangular(10, 14, 30)", 15.0));
 
         root.add(covidProgressionMap);
     }

@@ -22,6 +22,7 @@ import nl.tudelft.simulation.dsol.swing.gui.animation.DSOLAnimationTab;
 import nl.tudelft.simulation.dsol.swing.gui.control.RealTimeControlPanel;
 import nl.tudelft.simulation.dsol.swing.gui.inputparameters.TabbedParameterDialog;
 import nl.tudelft.simulation.language.DSOLException;
+import nl.tudelft.simulation.medlabs.common.MedlabsException;
 import nl.tudelft.simulation.medlabs.location.Location;
 import nl.tudelft.simulation.medlabs.simulation.SimpleAnimator;
 import nl.tudelft.simulation.medlabs.simulation.SimpleDEVSSimulator;
@@ -71,10 +72,10 @@ public class HerosApplication extends DSOLAnimationApplication
      * @throws InputParameterException
      * @throws FileNotFoundException
      * @throws URISyntaxException
-     * @throws Exception
+     * @throws MedlabsException
      */
     public static void main(final String[] args) throws DSOLException, SimRuntimeException, NamingException,
-            FileNotFoundException, InputParameterException, IOException, URISyntaxException
+            FileNotFoundException, InputParameterException, IOException, URISyntaxException, MedlabsException
     {
         String propertyFilename = (args.length > 0) ? args[0] : "/default.properties";
         boolean interactive = (args.length < 2) || !args[1].toLowerCase().equals("batch");
@@ -85,13 +86,16 @@ public class HerosApplication extends DSOLAnimationApplication
             model.setInteractive(true);
             ReadInputParameters.loadfromProperties(propertyFilename, model.getInputParameterMap());
             ReadInputParameters.loadFromArgs(args, true, model.getInputParameterMap());
+            // get the disease model
+            String diseaseFilename = model.getParameterValue("generic.diseasePropertiesFile");
+            ReadInputParameters.loadfromProperties(diseaseFilename, model.getInputParameterMap());
             setInputParametersDefaults(model.getInputParameterMap());
             if (TabbedParameterDialog.process(model.getInputParameterMap()))
             {
                 double runLengthDays = (double) model.getParameterValueInt("generic.RunLength");
                 long seed = model.getParameterValueLong("generic.Seed");
                 model.getSimulator().initialize(0.0, 0.0, runLengthDays * 24.0, model, seed);
-                Bounds2d mapBounds = /*model.getExtent(); */ new Bounds2d(4.202, 4.482, 52.011, 52.133);
+                Bounds2d mapBounds = /* model.getExtent(); */ new Bounds2d(4.202, 4.482, 52.011, 52.133);
                 // DSOLAnimationGisTab gisTab =
                 // new DSOLAnimationGisTab(mapBounds, (SimpleAnimator) model.getSimulator());
                 MedlabsAnimationTab gisTab = new MedlabsAnimationTab(mapBounds, (SimpleAnimator) model.getSimulator());
