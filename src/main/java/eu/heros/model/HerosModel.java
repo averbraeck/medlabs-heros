@@ -282,6 +282,24 @@ public class HerosModel extends AbstractMedlabsModel
     protected void extendInputParameterMap() throws InputParameterException
     {
         InputParameterMap root = this.inputParameterMap;
+
+        InputParameterMap genericMap = (InputParameterMap) root.get("generic");
+        genericMap.add(new InputParameterString("PersonFilePath", "path and name for the person file",
+                "blank means standard people.csv.gz file", "", 1.1));
+        genericMap.add(new InputParameterString("LocationsFilePath", "path and name for the locations file",
+                "blank means standard locations.csv.gz file", "", 1.2));
+        genericMap.add(new InputParameterString("LocationTypesFilePath", "path and name for the locationtypes file",
+                "blank means standard locationtypes.csv file", "", 1.3));
+        genericMap.add(new InputParameterString("ActivityFilePath", "path and name for the activitypatterns file",
+                "blank means standard activityschedules.xlsx file", "", 1.4));
+        genericMap.add(new InputParameterString("osmControlFile", "path and name for the OSM control file",
+                "blank means no map for animation", "", 1.5));
+        genericMap.add(new InputParameterString("osmMapFile", "path and name for the OSM map file",
+                "blank means no map for animation", "", 1.6));
+        genericMap
+                .add(new InputParameterString("generic.diseasePropertiesFile", "path and name for the disease properties file",
+                        "can be resource, absolute or relative", "/alpha.properties", 1.7));
+
         InputParameterMap policyMap = (InputParameterMap) root.get("policies");
         policyMap.add(new InputParameterInteger("NumberInfected", "number of people infected at t=0", "(can be 0)", 0, 1.0));
         policyMap.add(new InputParameterInteger("MinAgeInfected", "lowest age of people infected at t=0", "between 0 and 100.",
@@ -324,45 +342,39 @@ public class HerosModel extends AbstractMedlabsModel
         InputParameterMap covidProgressionMap =
                 new InputParameterMap("covidP", "Covid Progression", "Covid Progression parameters", 1.6);
 
-        covidProgressionMap.add(new InputParameterDouble("FractionAsymptomatic", "fraction that is asymptomatic",
-                "probability between 0.0 and 1.0", 0.5, 0.0, 1.0, true, true, "%f", 11.0));
-
-        covidProgressionMap.add(new InputParameterDouble("IncubationPeriod_min", "incubationPeriod minimum (days)",
-                "Triangular.min, time in days", 2.0, 0.0, 120.0, true, true, "%f", 14.0));
-        covidProgressionMap.add(new InputParameterDouble("IncubationPeriod_mode", "incubationPeriod mode (days)",
-                "Triangular.mode, time in days", 5.0, 0.0, 120.0, true, true, "%f", 15.0));
-        covidProgressionMap.add(new InputParameterDouble("IncubationPeriod_max", "incubationPeriod maximum (days)",
-                "Triangular.max, time in days", 8.0, 0.0, 120.0, true, true, "%f", 16.0));
-
-        covidProgressionMap.add(new InputParameterDouble("AsymptomaticToRecover_min", "AsymptomaticToRecover minimum (days)",
-                "Triangular.min, time in days", 14.0, 0.0, 120.0, true, true, "%f", 17.0));
-        covidProgressionMap.add(new InputParameterDouble("AsymptomaticToRecover_mode", "AsymptomaticToRecover mode (days)",
-                "Triangular.mode, time in days", 17.5, 0.0, 120.0, true, true, "%f", 18.0));
-        covidProgressionMap.add(new InputParameterDouble("AsymptomaticToRecover_max", "AsymptomaticToRecover maximum (days)",
-                "Triangular.max, time in days", 21.0, 0.0, 120.0, true, true, "%f", 19.0));
-
-        covidProgressionMap.add(new InputParameterDouble("SymptomaticToRecover_min", "SymptomaticToRecover minimum (days)",
-                "Triangular.min, time in days", 14.0, 0.0, 120.0, true, true, "%f", 20.0));
-        covidProgressionMap.add(new InputParameterDouble("SymptomaticToRecover_mode", "SymptomaticToRecover mode (days)",
-                "Triangular.mode, time in days", 17.5, 0.0, 120.0, true, true, "%f", 21.0));
-        covidProgressionMap.add(new InputParameterDouble("SymptomaticToRecover_max", "SymptomaticToRecover maximum (days)",
-                "Triangular.max, time in days", 21.0, 0.0, 120.0, true, true, "%f", 22.0));
+        covidProgressionMap.add(new InputParameterDouble("FractionAsymptomatic", "Fraction that is asymptomatic E->I(A)",
+                "Probability between 0.0 and 1.0", 0.46, 0.0, 1.0, true, true, "%f", 1.0));
+        covidProgressionMap.add(new InputParameterString("IncubationPeriodAsymptomatic",
+                "Incubation period asymptomatic E->I(A)", "Distribution, time in days", "Triangular(2.5, 3.4, 3.8)", 2.0));
+        covidProgressionMap.add(new InputParameterString("IncubationPeriodSymptomatic", "Incubation period symptomatic E->I(S)",
+                "Distribution, time in days", "Triangular(2.5, 3.4, 3.8)", 3.0));
+        covidProgressionMap.add(new InputParameterString("PeriodAsymptomaticToRecovered",
+                "Period asymptomatic to recovered I(A)->R", "Distribution, time in days", "Triangular(7, 12, 14)", 4.0));
+        covidProgressionMap.add(
+                new InputParameterString("FractionSymptomaticToHospitalized", "Fraction symptomatic to hospitalized I(S)->I(H)",
+                        "Distribution, time in days", "age{0-29: 0.02, 30-49: 0.1, 50-59: 0.3, 60-80: 0.6, 80-100: 0.2", 5.0));
+        covidProgressionMap.add(new InputParameterString("PeriodSymptomaticToHospitalized",
+                "Period symptomatic to hospitalized I(S)->I(H)", "Distribution, time in days", "Triangular(5, 7.5, 10)", 6.0));
+        covidProgressionMap.add(new InputParameterString("PeriodSymptomaticToRecovered",
+                "Period symptomatic to recovered I(S)->R", "Distribution, time in days", "Triangular(5, 7.5, 10)", 7.0));
+        covidProgressionMap.add(new InputParameterString("FractionHospitalizedToICU", "Fraction hospitalized to ICU I(H)->I(I)",
+                "Distribution, time in days", "age{0-29: 0.05, 30-49: 0.02, 50-59: 0.05, 60-80: 0.15, 80-100: 0.0", 8.0));
+        covidProgressionMap.add(new InputParameterString("FractionHospitalizedToDead", "Fraction hospitalized to dead I(H)->D",
+                "Distribution, time in days", "0.0", 9.0));
+        covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToICU",
+                "Period hospitalized to ICU I(H)->I(I)", "Distribution, time in days", "Triangular(3,8,14)", 10.0));
+        covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToDead",
+                "Period hospitalized to dead I(H)->D", "Distribution, time in days", "Triangular(3,8,14)", 11.0));
+        covidProgressionMap.add(new InputParameterString("PeriodHospitalizedToRecovered",
+                "Period hospitalized to recovered I(H)->R", "Distribution, time in days", "Triangular(3,8,14)", 12.0));
+        covidProgressionMap.add(new InputParameterString("FractionICUToDead", "Fraction ICU to dead I(I)->D",
+                "Distribution, time in days", "age{0-49: 0, 50-59: 0.015, 60-69: 0.08, 70-79: 0.4, 80-100: 0.6}", 13.0));
+        covidProgressionMap.add(new InputParameterString("PeriodICUToDead",
+                "Period ICU to dead I(I)->D", "Distribution, time in days", "Triangular(1, 14, 30)", 14.0));
+        covidProgressionMap.add(new InputParameterString("PeriodICUToRecovered",
+                "Period ICU to recovered I(I)->R", "Distribution, time in days", "Triangular(10, 14, 30)", 15.0));
 
         root.add(covidProgressionMap);
-
-        InputParameterMap genericMap = (InputParameterMap) root.get("generic");
-        genericMap.add(new InputParameterString("PersonFilePath", "path and name for the person file",
-                "blank means standard people.csv.gz file", "", 1.1));
-        genericMap.add(new InputParameterString("LocationsFilePath", "path and name for the locations file",
-                "blank means standard locations.csv.gz file", "", 1.2));
-        genericMap.add(new InputParameterString("LocationTypesFilePath", "path and name for the locationtypes file",
-                "blank means standard locationtypes.csv file", "", 1.3));
-        genericMap.add(new InputParameterString("ActivityFilePath", "path and name for the activitypatterns file",
-                "blank means standard activityschedules.xlsx file", "", 1.4));
-        genericMap.add(new InputParameterString("osmControlFile", "path and name for the OSM control file",
-                "blank means no map for animation", "", 1.5));
-        genericMap.add(new InputParameterString("osmMapFile", "path and name for the OSM map file",
-                "blank means no map for animation", "", 1.6));
     }
 
     /**
