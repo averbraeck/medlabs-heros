@@ -19,5 +19,5 @@ Healthcare,nl.tudelft.simulation.medlabs.location.animation.defaults.MedServiceA
 Hospital,nl.tudelft.simulation.medlabs.location.animation.defaults.HospitalAnimation,FALSE,TRUE,FALSE,1,1
 Recreation,nl.tudelft.simulation.medlabs.location.animation.defaults.RecreationAnimation,FALSE,TRUE,FALSE,1,1
 Park,nl.tudelft.simulation.medlabs.location.animation.defaults.ParkAnimation,FALSE,FALSE,FALSE,1,1
-Satellite accommodation,eu.heros.location.animation.SatelliteAccommodationAnimation,TRUE,TRUE,FALSE,1,1
-Satellite workplace,eu.heros.location.animation.SatelliteWorkplaceAnimation,TRUE,TRUE,FALSE,1,1
+Satellite accommodation,eu.heros.location.animation.SatelliteAccommodationAnimation,FALSE,FALSE,FALSE,1,1
+Satellite workplace,eu.heros.location.animation.SatelliteWorkplaceAnimation,FALSE,FALSE,FALSE,1,1
