@@ -23,7 +23,7 @@ public class SatelliteWorkplaceAnimation extends LocationAnimationSquare
     /** default template. */
     public static final LocationAnimationTemplate SATELLITE_WORKPLACE_TEMPLATE =
             new LocationAnimationTemplate("SatelliteHouse").setLineColor(Color.BLACK).setFillColor(Color.GRAY).setCharacter("W")
-                    .setHalfShortSize(60).setNumberColor(Color.BLACK).setNumberSize(30);
+                    .setHalfShortSize(120).setNumberColor(Color.BLACK).setNumberSize(30);
 
     /**
      * Create the animation for this location object.
