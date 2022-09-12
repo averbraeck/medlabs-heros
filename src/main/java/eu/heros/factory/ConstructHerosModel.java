@@ -39,6 +39,7 @@ import eu.heros.person.UniversityStudent;
 import eu.heros.person.WeekendWorker;
 import eu.heros.person.Worker;
 import eu.heros.person.WorkerCityToSatellite;
+import eu.heros.person.WorkerCountryToCity;
 import eu.heros.person.WorkerSatelliteToCity;
 import eu.heros.person.WorkerSatelliteToSatellite;
 import gnu.trove.iterator.TIntObjectIterator;
@@ -645,6 +646,20 @@ public class ConstructHerosModel
                                 workSchoolId);
                         break;
 
+                    case 15:
+                        if (workSchoolId == -1 || !this.model.getLocationMap().containsKey(workSchoolId))
+                        {
+                            System.err.println("No work location [" + workSchoolId + "] for WorkerSatelliteToSatellite on line "
+                                    + row.getOriginalLineNumber() + "\n" + row.toString());
+                            continue;
+                        }
+                        // note: work location can be anything: school, retail, office, park, ...
+                        person = new WorkerCountryToCity(this.model, personId, genderFemale, age, homeId,
+                                (short) this.model.getWeekPatternMap().get("0_Susceptible_worker country to city")
+                                        .getId(),
+                                workSchoolId);
+                        break;
+                        
                     default:
                         throw new MedlabsException(
                                 "social role " + socialRole + " no recognized on row " + row.getOriginalLineNumber());

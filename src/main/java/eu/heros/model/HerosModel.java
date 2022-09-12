@@ -25,6 +25,7 @@ import eu.heros.person.UniversityStudent;
 import eu.heros.person.WeekendWorker;
 import eu.heros.person.Worker;
 import eu.heros.person.WorkerCityToSatellite;
+import eu.heros.person.WorkerCountryToCity;
 import eu.heros.person.WorkerSatelliteToCity;
 import eu.heros.person.WorkerSatelliteToSatellite;
 import nl.tudelft.simulation.dsol.SimRuntimeException;
@@ -249,6 +250,7 @@ public class HerosModel extends AbstractMedlabsModel
         this.personTypes.put(WorkerCityToSatellite.class, "worker city to satellite");
         this.personTypes.put(WorkerSatelliteToCity.class, "worker satellite to city");
         this.personTypes.put(WorkerSatelliteToSatellite.class, "worker satellite to satellite");
+        this.personTypes.put(WorkerCountryToCity.class, "worker country to city");
     }
 
     @Override
