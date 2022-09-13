@@ -294,6 +294,8 @@ public class HerosModel extends AbstractMedlabsModel
                 "blank means standard locationtypes.csv file", "", 1.3));
         genericMap.add(new InputParameterString("ActivityFilePath", "path and name for the activitypatterns file",
                 "blank means standard activityschedules.xlsx file", "", 1.4));
+        genericMap.add(new InputParameterString("ProbRatioFilePath", "path and name for the probability based infections file",
+                "blank means standard infection_ratio.csv file", "", 1.45));
         genericMap.add(new InputParameterString("osmControlFile", "path and name for the OSM control file",
                 "blank means no map for animation", "", 1.5));
         genericMap.add(new InputParameterString("osmMapFile", "path and name for the OSM map file",
