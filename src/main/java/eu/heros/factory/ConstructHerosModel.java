@@ -295,6 +295,7 @@ public class ConstructHerosModel
         referenceGroupMap.put("WorkerCityToSatellite", "Worker");
         referenceGroupMap.put("WorkerSatelliteToCity", "Worker");
         referenceGroupMap.put("WorkerSatelliteToSatellite", "Worker");
+        referenceGroupMap.put("WorkerCountryToCity", "Worker");
 
         File path = getFileFromParam("generic.LocationsFilePath", "locations.csv.gz");
         Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(path)));
@@ -397,7 +398,7 @@ public class ConstructHerosModel
                     for (String personType : new String[] {"infant", "kindergarten student", "primary school student",
                             "secondary school student", "college student", "university student", "worker", "pensioner",
                             "unemployed job-seeker", "weekend worker", "essential worker", "worker satellite to city",
-                            "worker city to satellite", "worker satellite to satellite"})
+                            "worker city to satellite", "worker satellite to satellite", "worker country to city"})
                     {
                         if (this.model.getWeekPatternMap()
                                 .get(policy + "_" + diseasePhase.getName() + "_" + personType) == null)
@@ -424,7 +425,7 @@ public class ConstructHerosModel
         for (Class<? extends Person> pc : new Class[] {Infant.class, KindergartenStudent.class, PrimarySchoolStudent.class,
                 SecondarySchoolStudent.class, CollegeStudent.class, UniversityStudent.class, Worker.class, Pensioner.class,
                 Unemployed.class, WeekendWorker.class, EssentialWorker.class, WorkerSatelliteToCity.class,
-                WorkerCityToSatellite.class, WorkerSatelliteToSatellite.class})
+                WorkerCityToSatellite.class, WorkerSatelliteToSatellite.class, WorkerCountryToCity.class})
         {
             PersonType pt = new PersonType(this.model, nr, pc);
             this.model.getPersonTypeIdMap().put(nr, pt);
@@ -717,7 +718,7 @@ public class ConstructHerosModel
                     case 15:
                         if (workSchoolId == -1 || !this.model.getLocationMap().containsKey(workSchoolId))
                         {
-                            System.err.println("No work location [" + workSchoolId + "] for WorkerSatelliteToSatellite on line "
+                            System.err.println("No work location [" + workSchoolId + "] for WorkerCountryToCity on line "
                                     + row.getOriginalLineNumber() + "\n" + row.toString());
                             continue;
                         }
