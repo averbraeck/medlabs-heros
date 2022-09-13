@@ -152,7 +152,7 @@ public class Covid19Transmission extends DiseaseTransmission
             if (factor == 0.0)
                 return true;
 
-            // find the infectious persons in the sublocation (and make a set of others)
+            // find the infectious persons in the sublocation
             double sumTij = 0.0;
             double maxTij = 0.0;
             Person mostInfectiousPerson = null;
