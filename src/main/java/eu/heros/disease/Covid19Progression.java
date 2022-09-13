@@ -192,8 +192,6 @@ public class Covid19Progression extends DiseaseProgression
         {
             person.setDiseasePhase(exposed);
             exposed.addPerson();
-            this.model.getPersonMonitor().reportInfectPerson(person);
-            this.model.getPersonMonitor().reportInfectionAtLocationType(person.getCurrentLocation().getLocationTypeId());
 
             // Split into asymptomatic and symptomatic
             if (model.getU01().draw() < this.fractionAsymptomatic.probability(person))
