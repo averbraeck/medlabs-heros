@@ -291,11 +291,12 @@ public class ConstructHerosModel
     private void readLocationTable() throws Exception
     {
         // reference groups for satellite workers
-        Map<String, String> referenceGroupMap = new HashMap<>();
-        referenceGroupMap.put("WorkerCityToSatellite", "Worker");
-        referenceGroupMap.put("WorkerSatelliteToCity", "Worker");
-        referenceGroupMap.put("WorkerSatelliteToSatellite", "Worker");
-        referenceGroupMap.put("WorkerCountryToCity", "Worker");
+        Map<PersonType, PersonType> referenceGroupMap = new HashMap<>();
+        PersonType workerPT = this.model.getPersonTypeClassMap().get(Worker.class); 
+        referenceGroupMap.put(this.model.getPersonTypeClassMap().get(WorkerCityToSatellite.class), workerPT);
+        referenceGroupMap.put(this.model.getPersonTypeClassMap().get(WorkerSatelliteToCity.class), workerPT);
+        referenceGroupMap.put(this.model.getPersonTypeClassMap().get(WorkerSatelliteToSatellite.class), workerPT);
+        referenceGroupMap.put(this.model.getPersonTypeClassMap().get(WorkerCountryToCity.class), workerPT);
 
         File path = getFileFromParam("generic.LocationsFilePath", "locations.csv.gz");
         Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(path)));
