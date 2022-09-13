@@ -79,11 +79,13 @@ import nl.tudelft.simulation.medlabs.disease.DiseaseProgression;
 import nl.tudelft.simulation.medlabs.disease.DiseaseTransmission;
 import nl.tudelft.simulation.medlabs.excel.ExcelUtil;
 import nl.tudelft.simulation.medlabs.location.Location;
+import nl.tudelft.simulation.medlabs.location.LocationProbBased;
 import nl.tudelft.simulation.medlabs.location.LocationType;
 import nl.tudelft.simulation.medlabs.location.animation.LocationAnimation;
 import nl.tudelft.simulation.medlabs.output.ResultWriter;
 import nl.tudelft.simulation.medlabs.person.Person;
 import nl.tudelft.simulation.medlabs.person.PersonMonitor;
+import nl.tudelft.simulation.medlabs.person.PersonType;
 import nl.tudelft.simulation.medlabs.person.index.IdxPerson;
 import nl.tudelft.simulation.medlabs.simulation.TimeUnit;
 
@@ -110,6 +112,9 @@ public class ConstructHerosModel
     /** map to allocate households to the right sublocation. The map maps homeId via householdId to sublocationIndex. */
     private Map<Integer, Map<Integer, Short>> householdMap = new HashMap<>();
 
+    /** map to temporarily store the probability-based infection locations. */
+    private Map<Integer, double[]> probBasedInfectLoc = new HashMap<>();
+
     /**
      * Constructor of the model reader.
      * @param model the model
@@ -124,6 +129,7 @@ public class ConstructHerosModel
             DiseaseProgression covidProgression = new Covid19Progression(this.model);
             DiseaseTransmission covidTransmission = new Covid19Transmission(this.model);
             readLocationTypeTable();
+            readProbabilityBasedInfectionLocations();
             this.model.setDiseaseProgression(covidProgression);
             this.model.setDiseaseTransmission(covidTransmission);
             this.model.setDiseaseMonitor(new DiseaseMonitor(this.model, covidProgression, 0.5));
@@ -131,6 +137,7 @@ public class ConstructHerosModel
             readLocationTable();
             readWeekpatternData();
             checkBasicWeekPatterns();
+            makePersonTypes();
             readPersonTable();
             makeFamilies();
             infectPersons();
@@ -253,10 +260,42 @@ public class ConstructHerosModel
     }
 
     /**
+     * Read the probability-based infection locations.
+     */
+    private void readProbabilityBasedInfectionLocations() throws Exception
+    {
+        File path = getFileFromParam("generic.ProbRatioFilePath", "/infection_rates.csv");
+        Reader reader = new InputStreamReader(new FileInputStream(path));
+        CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
+        CsvRow row;
+        List<String> data;
+        Iterator<CsvRow> it = csvReader.iterator();
+        if (it.hasNext())
+        {
+            row = it.next(); // skip header
+            while (it.hasNext())
+            {
+                row = it.next();
+                data = row.getFields();
+                int locationId = Integer.parseInt(data.get(0));
+                double infectionRateFactor = Double.parseDouble(data.get(1));
+                double infectionRate = Double.parseDouble(data.get(2));
+                this.probBasedInfectLoc.put(locationId, new double[] {infectionRateFactor, infectionRate});
+            }
+        }
+    }
+
+    /**
      * @throws Exception
      */
     private void readLocationTable() throws Exception
     {
+        // reference groups for satellite workers
+        Map<String, String> referenceGroupMap = new HashMap<>();
+        referenceGroupMap.put("WorkerCityToSatellite", "Worker");
+        referenceGroupMap.put("WorkerSatelliteToCity", "Worker");
+        referenceGroupMap.put("WorkerSatelliteToSatellite", "Worker");
+
         File path = getFileFromParam("generic.LocationsFilePath", "locations.csv.gz");
         Reader reader = new InputStreamReader(new GZIPInputStream(new FileInputStream(path)));
         CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
@@ -330,7 +369,17 @@ public class ConstructHerosModel
                 }
                 byte locationTypeId = locationType.getLocationTypeId();
                 float area = subArea * nbSublocations;
-                new Location(this.model, locationId, locationTypeId, lat, lon, nbSublocations, area);
+                if (this.probBasedInfectLoc.containsKey(locationId))
+                {
+                    double infectionRateFactor = this.probBasedInfectLoc.get(locationId)[0];
+                    double infectionRate = this.probBasedInfectLoc.get(locationId)[1];
+                    new LocationProbBased(this.model, locationId, locationTypeId, lat, lon, nbSublocations, area,
+                            infectionRateFactor, infectionRate, referenceGroupMap, Covid19Progression.exposed);
+                }
+                else
+                {
+                    new Location(this.model, locationId, locationTypeId, lat, lon, nbSublocations, area);
+                }
             }
         }
     }
@@ -363,6 +412,25 @@ public class ConstructHerosModel
         }
         if (err)
             throw new MedlabsException("One of the week patterns is missing");
+    }
+
+    /**
+     * make the PersonTypes and register in the Model.
+     */
+    @SuppressWarnings("unchecked")
+    private void makePersonTypes()
+    {
+        int nr = 1;
+        for (Class<? extends Person> pc : new Class[] {Infant.class, KindergartenStudent.class, PrimarySchoolStudent.class,
+                SecondarySchoolStudent.class, CollegeStudent.class, UniversityStudent.class, Worker.class, Pensioner.class,
+                Unemployed.class, WeekendWorker.class, EssentialWorker.class, WorkerSatelliteToCity.class,
+                WorkerCityToSatellite.class, WorkerSatelliteToSatellite.class})
+        {
+            PersonType pt = new PersonType(this.model, nr, pc);
+            this.model.getPersonTypeIdMap().put(nr, pt);
+            this.model.getPersonTypeClassMap().put(pc, pt);
+            nr++;
+        }
     }
 
     /**
@@ -655,11 +723,10 @@ public class ConstructHerosModel
                         }
                         // note: work location can be anything: school, retail, office, park, ...
                         person = new WorkerCountryToCity(this.model, personId, genderFemale, age, homeId,
-                                (short) this.model.getWeekPatternMap().get("0_Susceptible_worker country to city")
-                                        .getId(),
+                                (short) this.model.getWeekPatternMap().get("0_Susceptible_worker country to city").getId(),
                                 workSchoolId);
                         break;
-                        
+
                     default:
                         throw new MedlabsException(
                                 "social role " + socialRole + " no recognized on row " + row.getOriginalLineNumber());
