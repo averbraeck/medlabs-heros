@@ -739,6 +739,14 @@ public class ConstructHerosModel
                 Covid19Progression.susceptible.addPerson();
             }
         }
+        
+        // Write how many we have per person type
+        System.out.println("\nNumber of persons per type:");
+        for (PersonType pt : this.model.getPersonTypeList())
+        {
+            System.out.println(pt.getName() + ": " + pt.getNumberPersons());
+        }
+        System.out.println();
     }
 
     /**
