@@ -129,6 +129,7 @@ public class ConstructHerosModel
             DiseaseProgression covidProgression = new Covid19Progression(this.model);
             DiseaseTransmission covidTransmission = new Covid19Transmission(this.model);
             readLocationTypeTable();
+            makePersonTypes();
             readProbabilityBasedInfectionLocations();
             this.model.setDiseaseProgression(covidProgression);
             this.model.setDiseaseTransmission(covidTransmission);
@@ -137,7 +138,6 @@ public class ConstructHerosModel
             readLocationTable();
             readWeekpatternData();
             checkBasicWeekPatterns();
-            makePersonTypes();
             readPersonTable();
             makeFamilies();
             infectPersons();
