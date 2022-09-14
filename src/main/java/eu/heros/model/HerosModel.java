@@ -493,6 +493,13 @@ public class HerosModel extends AbstractMedlabsModel
         person.setCurrentWeekPattern(getWeekPatternMap().get(weekPatternKey));
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public LocationType getLocationTypeHouse()
+    {
+        return this.locationTypeIdMap.get((byte) 0);
+    }
+    
     /**
      * @return the basePath
      */
