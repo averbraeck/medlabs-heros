@@ -191,7 +191,7 @@ public class Covid19Transmission extends DiseaseTransmission
                     if (this.model.getU01().draw() < pInfection)
                     {
                         person.setExposureTime((float) now);
-                        this.model.getPersonMonitor().reportExposure(person, lt.getLocationTypeId(), mostInfectiousPerson);
+                        this.model.getPersonMonitor().reportExposure(person, location, mostInfectiousPerson);
                         this.model.getDiseaseProgression().changeDiseasePhase(person, Covid19Progression.exposed);
                     }
                 }
@@ -249,7 +249,7 @@ public class Covid19Transmission extends DiseaseTransmission
                     if (this.model.getU01().draw() < pInfection)
                     {
                         person.setExposureTime((float) now);
-                        this.model.getPersonMonitor().reportExposure(person, lt.getLocationTypeId(), mostInfectiousPerson);
+                        this.model.getPersonMonitor().reportExposure(person, location, mostInfectiousPerson);
                         this.model.getDiseaseProgression().changeDiseasePhase(person, Covid19Progression.exposed);
                     }
                 }
