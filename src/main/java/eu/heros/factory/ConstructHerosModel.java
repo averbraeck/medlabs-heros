@@ -218,10 +218,8 @@ public class ConstructHerosModel
     @SuppressWarnings("unchecked")
     private void readLocationTypeTable() throws Exception
     {
-        this.model.getLocationTypeIndexMap().remove((byte) 0);
-        this.model.getLocationTypeNameMap().remove("house");
         byte id = 0;
-
+        // House or Accommodation should be #0, the first in the list (see HerosModel, method getLocationTypeHouse.
         File path = getFileFromParam("generic.LocationTypesFilePath", "/locationtypes.csv");
         Reader reader = new InputStreamReader(new FileInputStream(path));
         CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
@@ -244,16 +242,8 @@ public class ConstructHerosModel
                 // Class.forName(ltClassName);
                 Class<? extends LocationAnimation> ltAniClass =
                         (Class<? extends LocationAnimation>) Class.forName(ltAniClassName);
-                if (id == 0)
-                {
-                    this.model.locationTypeHouse = new LocationType(this.model, id, ltName, Location.class, ltAniClass,
-                            reproducible, infectSub, contagiousRateFactor);
-                }
-                else
-                {
-                    new LocationType(this.model, id, ltName, Location.class, ltAniClass, reproducible, infectSub,
-                            contagiousRateFactor);
-                }
+                new LocationType(this.model, id, ltName, Location.class, ltAniClass, reproducible, infectSub,
+                        contagiousRateFactor);
                 id++;
             }
         }
@@ -292,7 +282,7 @@ public class ConstructHerosModel
     {
         // reference groups for satellite workers
         Map<PersonType, PersonType> referenceGroupMap = new HashMap<>();
-        PersonType workerPT = this.model.getPersonTypeClassMap().get(Worker.class); 
+        PersonType workerPT = this.model.getPersonTypeClassMap().get(Worker.class);
         referenceGroupMap.put(this.model.getPersonTypeClassMap().get(WorkerCityToSatellite.class), workerPT);
         referenceGroupMap.put(this.model.getPersonTypeClassMap().get(WorkerSatelliteToCity.class), workerPT);
         referenceGroupMap.put(this.model.getPersonTypeClassMap().get(WorkerSatelliteToSatellite.class), workerPT);
@@ -739,7 +729,7 @@ public class ConstructHerosModel
                 Covid19Progression.susceptible.addPerson();
             }
         }
-        
+
         // Write how many we have per person type
         System.out.println("\nNumber of persons per type:");
         for (PersonType pt : this.model.getPersonTypeList())
