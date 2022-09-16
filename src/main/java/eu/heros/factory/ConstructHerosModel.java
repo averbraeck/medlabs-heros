@@ -26,6 +26,7 @@ import de.siegmar.fastcsv.reader.CsvReader;
 import de.siegmar.fastcsv.reader.CsvRow;
 import eu.heros.disease.Covid19Progression;
 import eu.heros.disease.Covid19TransmissionArea;
+import eu.heros.disease.Covid19TransmissionDistance;
 import eu.heros.model.HerosModel;
 import eu.heros.person.CollegeStudent;
 import eu.heros.person.EssentialWorker;
@@ -127,7 +128,9 @@ public class ConstructHerosModel
         try
         {
             DiseaseProgression covidProgression = new Covid19Progression(this.model);
-            DiseaseTransmission covidTransmission = new Covid19TransmissionArea(this.model);
+            DiseaseTransmission covidTransmission =
+                    (this.model.getParameterValue("generic.diseasePropertiesModel").equals("area"))
+                            ? new Covid19TransmissionArea(this.model) : new Covid19TransmissionDistance(this.model);
             readLocationTypeTable();
             makePersonTypes();
             readProbabilityBasedInfectionLocations();
