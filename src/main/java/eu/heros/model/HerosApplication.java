@@ -91,8 +91,6 @@ public class HerosApplication extends DSOLAnimationApplication
             ReadInputParameters.loadfromProperties(diseaseFilename, model.getInputParameterMap());
             setInputParametersDefaults(model.getInputParameterMap());
             InputParameterMap generic = (InputParameterMap) model.getInputParameterMap().get("generic");
-            generic.get("diseasePropertiesFile").setReadOnly(true);
-            generic.get("diseasePropertiesModel").setReadOnly(true);
             if (model.getParameterValue("generic.diseasePropertiesModel").equals("area"))
                 model.getInputParameterMap().remove("covidT_dist");
             else
