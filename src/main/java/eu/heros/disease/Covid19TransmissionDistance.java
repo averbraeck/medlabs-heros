@@ -14,36 +14,32 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
     /** */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Parameter p_B of the formula.<br>
-     * According to Chu et al. (2020) infection probability varies from 0.09 to 0.38 if the distance is lower than 1 m. This
-     * works for symptomatic.
-     */
-    private final double contagiousness;
+    /** Latent period L (days). */
+    private final double L;
 
-    /**
-     * Parameter beta of the formula.<br>
-     * Beta is a correction factor for mask wearing and other personal protection; beta is in [0, 1].
-     */
-    private double beta;
+    /** Incubation period I (days). includes L, so I larger than L */
+    private double I;
 
-    /**
-     * Parameter t_e_min of the formula (converted to hours).<br>
-     * t_e_min is the day after exposure when a person becomes contagious for the first time.
-     */
-    private final double t_e_min;
+    /** Clinical disease period C (days). C starts after L. */
+    private final double C;
 
-    /**
-     * Parameter t_e_mode of the formula (converted to hours).<br>
-     * t_e_mode is the day after exposure when a person is the most contagious.
-     */
-    private final double t_e_mode;
+    /** Peak viral load v_max (positive). */
+    private final double v_max;
 
-    /**
-     * Parameter t_e_max of the formula (converted to hours).<br>
-     * t_e_max is the day after exposure when a person is not contagious anymore.
-     */
-    private final double t_e_max;
+    /** Reference viral load v_0 (positive). */
+    private final double v_0;
+
+    /** Transmission rate r (positive). */
+    private final double r;
+
+    /** Social distancing factor psi (positive). */
+    private final double psi;
+
+    /** Calibraton factor alpha (positive). */
+    private final double alpha;
+
+    /** Mask effectiveness mu from interval [0, 1]. */
+    private final double mu;
 
     /**
      * Parameter to indicate when the duration is too short to make an infection calculation (converted to hours). Note that for
@@ -59,11 +55,15 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
     {
         super(model, "Covid19");
 
-        this.contagiousness = model.getParameterValueDouble("covidT.contagiousness");
-        this.beta = model.getParameterValueDouble("covidT.beta");
-        this.t_e_min = model.getParameterValueDouble("covidT.t_e_min") * 24.0;
-        this.t_e_mode = model.getParameterValueDouble("covidT.t_e_mode") * 24.0;
-        this.t_e_max = model.getParameterValueDouble("covidT.t_e_max") * 24.0;
+        this.L = model.getParameterValueDouble("covidT_dist.L") * 24.0;
+        this.I = model.getParameterValueDouble("covidT_dist.I") * 24.0;
+        this.C = model.getParameterValueDouble("covidT_dist.C") * 24.0;
+        this.v_max = model.getParameterValueDouble("covidT_dist.v_max");
+        this.v_0 = model.getParameterValueDouble("covidT_dist.v_0");
+        this.r = model.getParameterValueDouble("covidT_dist.r");
+        this.psi = model.getParameterValueDouble("covidT_dist.psi");
+        this.alpha = model.getParameterValueDouble("covidT_dist.alpha");
+        this.mu = model.getParameterValueDouble("covidT_dist.mu");
         this.calculationThreshold = model.getParameterValueDouble("covidT.calculation_threshold") / 3600.0;
     }
 
@@ -79,46 +79,28 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
      * The formula to use to see if infectious persons j = 1..N_K infect another person i in location K is: <br>
      * 
      * <pre>
-     * <code>                        
-     *                                /  beta . p_B . p_j(t_e) . t_i,j  \
-     *                   - SUM        | ------------------------------- |
-     *  infected              j=1:N_K \          sigma_T . A_K          /
-     * p         = 1 - e
-     *  i
+     * <code>
      * 
-     * Since beta, p_B, t_i,j, sigma_T, and A_K are constant in one calculation, the formula simplifies to:
-     * 
-     *                      beta . p_B . t_i,j
-     *                   - --------------------   SUM   p_j(t_e)
-     *  infected               sigma_T . A_K    j=1:N_K
-     * p         = 1 - e
-     *  i
+     * p_i = 1 - exp[ SUM_j=i:M_k [- (1 - mu)^2 . P_j(d) . t_i,j . sigma (min(DELTA(A_k, N_k), psi)) . alpha ]
      * 
      * where:
-     *   T        is the location type of the location
-     *   K        is the indicator of the (sub)location
-     *   N_K      is the number of infectious persons in (sub)location K which is of location type T
-     *   sigma_T  is a correction factor for ventilation and social distancing for location type T 
-     *            (making the location seem larger (or smaller) than it actually is); sigma_T is typically in (0, 1]
-     *   beta     is a correction factor for mask wearing and other personal protection; beta is in [0, 1]
-     *   p_B      is the base contagiousness of the variant (base transmission without ventilation, masks, etc.)
-     *   p_j(t_e) is the infectiousness of person j for the number of days since the exposure date t_e of person j; 
-     *            e.g., the infectiousness can be 0 for the first 3 days, then climb to 1 in 4 days, and then decrease to 0
-     *            in for instance a week. A person would then be contagious between day 3 and 14, with a peak at day 7
-     *            after exposure. p_j(t_e) is therefore in [0, 1]
-     *   t_i,j    is the time that contagious person j and susceptible person i have spent together in location K (in hours)
      * 
-     * Suppose that 1 infectious person and 1 susceptible person spend 1 hour together in a room of 10 m2, with the 
-     * infectiousness of person j at its peak. When there are no corrective measures, the formula simplifies to:
-     * 
-     * p_i = 1 - e ^ (-p_B / 10)
-     * 
-     * Suppose the chance of getting infected is 0.05 (5%) in that case. Then e ^ - (p_B / 10) = 0.95, so 
-     * p_B = -10 ln(0.95) = 0.51. When the room is 5 m^2, the probability becomes 9.6%. When the persons spend 2 hours
-     * together,the probability also becomes 9.6%. When the persons wear masks, reducing transmission by 50% (beta = 0.5),
-     * the transmission probability becomes 2.5%. When the room is extremely large (e.g., outside) the formula becomes 
-     * e.g., for 1000 m^2: 1 - e ^ (-0.001) = 1E-3. This all feels correct. 
-     * 
+     * k        is the (sub)location index
+     * i        is the index of a susceptible person in (sub)location k
+     * j        is the index of an infectious person in (sub)location k
+     * M_k      is the number of infectious persons in (sub)location k
+     * N_k      is the number of persons in (sub)location K which is of location type T
+     * p_j(d)   is the infectiousness of person j for the number of days (d) since the exposure date of person j; 
+     *          e.g., the infectiousness can be 0 for the first 3 days, then climb to 7 in 4 days, and then decrease to 0
+     *          in for instance a week.
+     * mu       is the masking factor between 0 (no masks) and 1 (fully protected) 
+     * t_i,j    is the time that contagious person j and susceptible person i have spent together in location K (in hours)
+     * sigma    is the function that translates average distance to transmission probability
+     * DELTA    is the function that transforms area A_k to average distance
+     * A_k      is the area of (sub)location k
+     * psi      is the social distancing factor, as the minimum distance that people keep
+     * alpha    is a calibration factor
+     *  
      * </code>
      * </pre>
      * 
@@ -146,41 +128,50 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
             // INFECTION TAKES PLACE JUST IN THE SUBLOCATION
             // NOTE: WHEN THE LOCATION HAS ONLY 1 SUBLOCATION THIS PART OF THE METHOD IS USED (MUCH FASTER)
 
-            // calculate (beta . p_B . t_i,j) / (sigma_T . A_K)
+            // Calculate Delta. Delta = sqrt(A_k / N_k)
             area /= location.getNumberOfSubLocations();
-            double factor = -this.beta * this.contagiousness * duration / (lt.getCorrectionFactorArea() * area);
+            double Delta = Math.sqrt(area / personsInSublocation.size());
+            // calculate sigma(min(Delta, psi))
+            // sigma is ~ 100% transmission probability at 0 m, 50% at 1.5 m, and ~ 0% at 3 m.
+            // Shape of sigma function is a sigmoid, with above parameters 1 - 1 / exp(-3 * (d - 1.5))
+            double sigma = 1.0 - 1.0 / Math.exp(-3.0 * (Math.min(Delta, this.psi) - 1.5));
+            double factor = sigma * this.alpha * (1.0 - this.mu) * (1.0 - this.mu);
             if (factor == 0.0)
                 return true;
 
             // find the infectious persons in the sublocation
-            double sumTij = 0.0;
-            double maxTij = 0.0;
+            double sum = 0.0;
+            double maxVt = 0.0;
             Person mostInfectiousPerson = null;
             for (TIntIterator it = personsInSublocation.iterator(); it.hasNext();)
             {
                 Person person = personMap.get(it.next());
                 if (person.getDiseasePhase().isIll())
                 {
-                    double te = now - person.getExposureTime();
-                    double contribution = 0.0;
-                    if (te >= this.t_e_min && te < this.t_e_mode)
-                        contribution += (te - this.t_e_min) / (this.t_e_mode - this.t_e_min);
-                    else if (te >= this.t_e_mode && te <= this.t_e_max)
-                        contribution += (this.t_e_max - te) / (this.t_e_max - this.t_e_mode);
+                    double v_t = 0.0;
+                    double t = now - person.getExposureTime();
+                    if (t >= this.L && t < this.I)
+                        v_t = this.v_max * ((t - this.L) / (this.I - this.L));
+                    else if (t >= this.I && t < this.I + this.C)
+                        v_t = this.v_max * ((this.I + this.C - t) / this.C);
                     // else the person is infected, but not yet or not anymore contagious
-                    sumTij += contribution;
-                    if (contribution > maxTij)
+                    if (v_t > 0)
                     {
-                        maxTij = contribution;
-                        mostInfectiousPerson = person;
+                        double Pt = 1 / (1 + Math.exp(-this.r * (v_t - this.v_0)));
+                        sum += factor * duration * Pt;
+                        if (v_t > maxVt)
+                        {
+                            maxVt = v_t;
+                            mostInfectiousPerson = person;
+                        }
                     }
                 }
             }
-            if (sumTij == 0.0)
+            if (sum == 0.0)
                 return true;
 
             // calculate the probability for all persons present in the sublocation
-            double pInfection = 1.0 - Math.exp(factor * sumTij);
+            double pInfection = 1.0 - Math.exp(-sum);
             // check if we infect others
             for (TIntIterator it = personsInSublocation.iterator(); it.hasNext();)
             {
@@ -204,40 +195,49 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
             // INFECTION TAKES PLACE IN THE TOTAL LOCATION
             // TRY TO AVOID CALLING THIS -- IT IS EXPENSIVE
 
-            // calculate (beta . p_B . t_i,j) / (sigma_T . A_K)
-            double factor = this.beta * this.contagiousness * duration / (lt.getCorrectionFactorArea() * area);
+            // Calculate Delta. Delta = sqrt(A_k / N_k)
+            double Delta = Math.sqrt(area / personsInSublocation.size());
+            // calculate sigma(min(Delta, psi))
+            // sigma is ~ 100% transmission probability at 0 m, 50% at 1.5 m, and ~ 0% at 3 m.
+            // Shape of sigma function is a sigmoid, with above parameters 1 - 1 / exp(-3 * (d - 1.5))
+            double sigma = 1.0 - 1.0 / Math.exp(-3.0 * (Math.min(Delta, this.psi) - 1.5));
+            double factor = sigma * this.alpha * (1.0 - this.mu) * (1.0 - this.mu);
             if (factor == 0.0)
                 return true;
 
-            // find the infectious persons in the TOTAL location
-            double sumTij = 0.0;
-            double maxTij = 0.0;
+            // find the infectious persons in the sublocation
+            double sum = 0.0;
+            double maxVt = 0.0;
             Person mostInfectiousPerson = null;
             for (TIntIterator it = location.getAllPersonIds().iterator(); it.hasNext();)
             {
                 Person person = personMap.get(it.next());
                 if (person.getDiseasePhase().isIll())
                 {
-                    double te = now - person.getExposureTime();
-                    double contribution = 0.0;
-                    if (te >= this.t_e_min && te < this.t_e_mode)
-                        contribution += te / (this.t_e_mode - this.t_e_min);
-                    else if (te >= this.t_e_mode && te <= this.t_e_max)
-                        contribution += 1.0 - te / (this.t_e_max - this.t_e_mode);
-                    // else the person is infected, but not contagious
-                    sumTij += contribution;
-                    if (contribution > maxTij)
+                    double v_t = 0.0;
+                    double t = now - person.getExposureTime();
+                    if (t >= this.L && t < this.I)
+                        v_t = this.v_max * ((t - this.L) / (this.I - this.L));
+                    else if (t >= this.I && t < this.I + this.C)
+                        v_t = this.v_max * ((this.I + this.C - t) / this.C);
+                    // else the person is infected, but not yet or not anymore contagious
+                    if (v_t > 0)
                     {
-                        maxTij = contribution;
-                        mostInfectiousPerson = person;
+                        double Pt = 1 / (1 + Math.exp(-this.r * (v_t - this.v_0)));
+                        sum += factor * duration * Pt;
+                        if (v_t > maxVt)
+                        {
+                            maxVt = v_t;
+                            mostInfectiousPerson = person;
+                        }
                     }
                 }
             }
-            if (sumTij == 0.0)
+            if (sum == 0.0)
                 return true;
 
             // calculate the probability for all persons present
-            double pInfection = 1.0 - Math.exp(factor * sumTij);
+            double pInfection = 1.0 - Math.exp(-sum);
 
             // check if we infect others
             for (TIntIterator it = location.getAllPersonIds().iterator(); it.hasNext();)
