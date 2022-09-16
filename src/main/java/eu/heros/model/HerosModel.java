@@ -355,7 +355,7 @@ public class HerosModel extends AbstractMedlabsModel
                 100.0, true, true, "%f", 4.0));
         covidTransmissionDistMap.add(new InputParameterDouble("v_0", "Reference viral load v_0", "Transmission probability; > 0",
                 4.0, 0.0, 100.0, true, true, "%f", 5.0));
-        covidTransmissionDistMap.add(new InputParameterDouble("k", "Transmission rate k", "Transmission probability; > 0",
+        covidTransmissionDistMap.add(new InputParameterDouble("r", "Transmission rate r", "Transmission probability; > 0",
                 2.294, 0.0, 100.0, true, true, "%f", 6.0));
         covidTransmissionDistMap.add(new InputParameterDouble("psi", "Social distancing factor psi", "Infection probability; > 0",
                 3.0, 0.0, 100.0, true, true, "%f", 7.0));
