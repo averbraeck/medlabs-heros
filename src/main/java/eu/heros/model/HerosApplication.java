@@ -90,6 +90,13 @@ public class HerosApplication extends DSOLAnimationApplication
             String diseaseFilename = model.getParameterValue("generic.diseasePropertiesFile");
             ReadInputParameters.loadfromProperties(diseaseFilename, model.getInputParameterMap());
             setInputParametersDefaults(model.getInputParameterMap());
+            InputParameterMap generic = (InputParameterMap) model.getInputParameterMap().get("generic");
+            generic.get("diseasePropertiesFile").setReadOnly(true);
+            generic.get("diseasePropertiesModel").setReadOnly(true);
+            if (model.getParameterValue("generic.diseasePropertiesModel").equals("area"))
+                model.getInputParameterMap().remove("covidT_dist");
+            else
+                model.getInputParameterMap().remove("covidT_area");
             if (TabbedParameterDialog.process(model.getInputParameterMap()))
             {
                 double runLengthDays = (double) model.getParameterValueInt("generic.RunLength");
