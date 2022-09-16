@@ -9,7 +9,7 @@ import nl.tudelft.simulation.medlabs.location.LocationType;
 import nl.tudelft.simulation.medlabs.model.MedlabsModelInterface;
 import nl.tudelft.simulation.medlabs.person.Person;
 
-public class Covid19Transmission extends DiseaseTransmission
+public class Covid19TransmissionArea extends DiseaseTransmission
 {
     /** */
     private static final long serialVersionUID = 1L;
@@ -55,7 +55,7 @@ public class Covid19Transmission extends DiseaseTransmission
      * Create the Covid19 Transmission model.
      * @param model MedlabsModelInterface; the Medlabs model
      */
-    public Covid19Transmission(final MedlabsModelInterface model)
+    public Covid19TransmissionArea(final MedlabsModelInterface model)
     {
         super(model, "Covid19");
 
