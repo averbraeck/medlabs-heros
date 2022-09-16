@@ -300,8 +300,10 @@ public class HerosModel extends AbstractMedlabsModel
                 "blank means no map for animation", "", 1.5));
         genericMap.add(new InputParameterString("osmMapFile", "path and name for the OSM map file",
                 "blank means no map for animation", "", 1.6));
+        genericMap.add(new InputParameterString("diseasePropertiesModel", "area-based or distance-based transmission",
+                "[R/O] has to match file, value = {area, distance}", "area", 1.7));
         genericMap.add(new InputParameterString("diseasePropertiesFile", "path and name for the disease properties file",
-                "can be resource, absolute or relative", "/alpha.properties", 1.7));
+                "[R/O] can be resource, absolute or relative", "/alpha.properties", 1.8));
 
         InputParameterMap policyMap = (InputParameterMap) root.get("policies");
         policyMap.add(new InputParameterInteger("NumberInfected", "number of people infected at t=0", "(can be 0)", 0, 1.0));
@@ -320,31 +322,54 @@ public class HerosModel extends AbstractMedlabsModel
         policyMap.add(new InputParameterInteger("DayStartWearMasks", "day Wear Masks is effected (-1 is not)",
                 "number between -1 and 90", -1, -1, 90, "%d", 7.0));
 
-        InputParameterMap covidTransmissionMap =
-                new InputParameterMap("covidT", "Covid Transmission", "Covid Transmission parameters", 1.5);
-
-        covidTransmissionMap.add(new InputParameterDouble("contagiousness", "contagiousness as calculated from exp-formula",
+        InputParameterMap covidTransmissionAreaMap = new InputParameterMap("covidT_area", "Covid Transmission by Area",
+                "Covid Transmission parameters per area", 1.5);
+        covidTransmissionAreaMap.add(new InputParameterDouble("contagiousness", "contagiousness as calculated from exp-formula",
                 "value between 0.0 and 1.0", 0.5, 0.0, 1.0, true, true, "%f", 1.0));
-        covidTransmissionMap
+        covidTransmissionAreaMap
                 .add(new InputParameterDouble("beta", "initial personal protection factor (masks, other protection)",
-                        "value between 0.0 and 1.0", 1.0, 0.0, 1.0, true, true, "%f", 1.0));
-
-        covidTransmissionMap.add(new InputParameterDouble("t_e_min", "first day of contagiousness of an exposed person (days)",
-                "Triangular.min, time in days", 3.0, 0.0, 60.0, true, true, "%f", 2.0));
-        covidTransmissionMap.add(new InputParameterDouble("t_e_mode", "peak day of contagiousness of an exposed person (days)",
-                "Triangular.mode, time in days", 7.0, 0.0, 60.0, true, true, "%f", 3.0));
-        covidTransmissionMap.add(new InputParameterDouble("t_e_max", "last day of contagiousness of an exposed person (days)",
-                "Triangular.max, time in days", 14.0, 0.0, 60.0, true, true, "%f", 4.0));
-
-        covidTransmissionMap.add(new InputParameterDouble("calculation_threshold",
+                        "value between 0.0 and 1.0", 1.0, 0.0, 1.0, true, true, "%f", 1.5));
+        covidTransmissionAreaMap
+                .add(new InputParameterDouble("t_e_min", "first day of contagiousness of an exposed person (days)",
+                        "Triangular.min, time in days", 3.0, 0.0, 60.0, true, true, "%f", 2.0));
+        covidTransmissionAreaMap
+                .add(new InputParameterDouble("t_e_mode", "peak day of contagiousness of an exposed person (days)",
+                        "Triangular.mode, time in days", 7.0, 0.0, 60.0, true, true, "%f", 3.0));
+        covidTransmissionAreaMap
+                .add(new InputParameterDouble("t_e_max", "last day of contagiousness of an exposed person (days)",
+                        "Triangular.max, time in days", 14.0, 0.0, 60.0, true, true, "%f", 4.0));
+        covidTransmissionAreaMap.add(new InputParameterDouble("calculation_threshold",
                 "threshold for the transmission contact calculation (sec)",
                 "Below this contact duration, no infections will be calculated", 60, 0.0, 3600.0, true, true, "%f", 5.0));
+        root.add(covidTransmissionAreaMap);
 
-        root.add(covidTransmissionMap);
+        InputParameterMap covidTransmissionDistMap = new InputParameterMap("covidT_dist", "Covid Transmission by Distance",
+                "Covid Transmission parameters by distance", 1.51);
+        covidTransmissionDistMap.add(new InputParameterDouble("L", "Latent period L (days)", "Viral load model", 2.0, 0.0,
+                100.0, true, true, "%f", 1.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("I", "Incubation period I (days)",
+                "Viral load model; includes L, so I > L", 3.4, 0.0, 100.0, true, true, "%f", 2.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("C", "Clinical disease period C (days)",
+                "Viral load model; C starts after L", 3.0, 0.0, 100.0, true, true, "%f", 3.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("v_max", "Peak viral load v_max", "Viral load model; > 0", 7.23, 0.0,
+                100.0, true, true, "%f", 4.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("v_0", "Reference viral load v_0", "Transmission probability; > 0",
+                4.0, 0.0, 100.0, true, true, "%f", 5.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("k", "Transmission rate k", "Transmission probability; > 0",
+                2.294, 0.0, 100.0, true, true, "%f", 6.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("psi", "Social distancing factor psi", "Infection probability; > 0",
+                3.0, 0.0, 100.0, true, true, "%f", 7.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("alpha", "Calibraton factor alpha", "Infection probability; > 0",
+                5.0, 0.0, 100.0, true, true, "%f", 8.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("mu", "Mask effectiveness factor mu", "Infection probability; [0-1]",
+                0.0, 0.0, 1.0, true, true, "%f", 9.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("calculation_threshold",
+                "threshold for the transmission contact calculation (sec)",
+                "Below this contact duration, no infections will be calculated", 60, 0.0, 3600.0, true, true, "%f", 10.0));
+        root.add(covidTransmissionDistMap);
 
         InputParameterMap covidProgressionMap =
                 new InputParameterMap("covidP", "Covid Progression", "Covid Progression parameters", 1.6);
-
         covidProgressionMap.add(new InputParameterDouble("FractionAsymptomatic", "Fraction that is asymptomatic E->I(A)",
                 "Probability between 0.0 and 1.0", 0.46, 0.0, 1.0, true, true, "%f", 1.0));
         covidProgressionMap.add(new InputParameterString("IncubationPeriodAsymptomatic",
@@ -378,7 +403,6 @@ public class HerosModel extends AbstractMedlabsModel
                 "Distribution, time in days", "Triangular(1, 14, 30)", 14.0));
         covidProgressionMap.add(new InputParameterString("PeriodICUToRecovered", "Period ICU to recovered I(I)->R",
                 "Distribution, time in days", "Triangular(10, 14, 30)", 15.0));
-
         root.add(covidProgressionMap);
     }
 
@@ -499,7 +523,7 @@ public class HerosModel extends AbstractMedlabsModel
     {
         return this.locationTypeIdMap.get((byte) 0);
     }
-    
+
     /**
      * @return the basePath
      */
