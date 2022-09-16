@@ -59,12 +59,12 @@ public class Covid19TransmissionArea extends DiseaseTransmission
     {
         super(model, "Covid19");
 
-        this.contagiousness = model.getParameterValueDouble("covidT.contagiousness");
-        this.beta = model.getParameterValueDouble("covidT.beta");
-        this.t_e_min = model.getParameterValueDouble("covidT.t_e_min") * 24.0;
-        this.t_e_mode = model.getParameterValueDouble("covidT.t_e_mode") * 24.0;
-        this.t_e_max = model.getParameterValueDouble("covidT.t_e_max") * 24.0;
-        this.calculationThreshold = model.getParameterValueDouble("covidT.calculation_threshold") / 3600.0;
+        this.contagiousness = model.getParameterValueDouble("covidT_area.contagiousness");
+        this.beta = model.getParameterValueDouble("covidT_area.beta");
+        this.t_e_min = model.getParameterValueDouble("covidT_area.t_e_min") * 24.0;
+        this.t_e_mode = model.getParameterValueDouble("covidT_area.t_e_mode") * 24.0;
+        this.t_e_max = model.getParameterValueDouble("covidT_area.t_e_max") * 24.0;
+        this.calculationThreshold = model.getParameterValueDouble("covidT_area.calculation_threshold") / 3600.0;
     }
 
     // -------------------------------------------------------------
