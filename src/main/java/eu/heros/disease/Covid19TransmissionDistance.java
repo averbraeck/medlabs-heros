@@ -64,7 +64,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
         this.psi = model.getParameterValueDouble("covidT_dist.psi");
         this.alpha = model.getParameterValueDouble("covidT_dist.alpha");
         this.mu = model.getParameterValueDouble("covidT_dist.mu");
-        this.calculationThreshold = model.getParameterValueDouble("covidT.calculation_threshold") / 3600.0;
+        this.calculationThreshold = model.getParameterValueDouble("covidT_dist.calculation_threshold") / 3600.0;
     }
 
     // -------------------------------------------------------------
