@@ -134,7 +134,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
             // calculate sigma(min(Delta, psi))
             // sigma is ~ 100% transmission probability at 0 m, 50% at 1.5 m, and ~ 0% at 3 m.
             // Shape of sigma function is a sigmoid, with above parameters 1 - 1 / exp(-3 * (d - 1.5))
-            double sigma = 1.0 - 1.0 / Math.exp(-3.0 * (Math.min(Delta, this.psi) - 1.5));
+            double sigma = 1.0 - 1.0 / (1.0 + Math.exp(-3.0 * (Math.min(Delta, this.psi) - 1.5)));
             double factor = sigma * this.alpha * (1.0 - this.mu) * (1.0 - this.mu);
             if (factor == 0.0)
                 return true;
@@ -200,7 +200,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
             // calculate sigma(min(Delta, psi))
             // sigma is ~ 100% transmission probability at 0 m, 50% at 1.5 m, and ~ 0% at 3 m.
             // Shape of sigma function is a sigmoid, with above parameters 1 - 1 / exp(-3 * (d - 1.5))
-            double sigma = 1.0 - 1.0 / Math.exp(-3.0 * (Math.min(Delta, this.psi) - 1.5));
+            double sigma = 1.0 - 1.0 / (1.0 + Math.exp(-3.0 * (Math.min(Delta, this.psi) - 1.5)));
             double factor = sigma * this.alpha * (1.0 - this.mu) * (1.0 - this.mu);
             if (factor == 0.0)
                 return true;
