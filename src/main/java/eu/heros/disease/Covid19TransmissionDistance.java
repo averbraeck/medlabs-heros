@@ -81,7 +81,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
      * <pre>
      * <code>
      * 
-     * p_i = 1 - exp[ SUM_j=i:M_k [- (1 - mu)^2 . P_j(d) . t_i,j . sigma (min(DELTA(A_k, N_k), psi)) . alpha ]
+     * p_i = 1 - exp[ SUM_j=i:M_k [- (1 - mu)^2 . P_j(d) . t_i,j . sigma (max(DELTA(A_k, N_k), psi)) . alpha ]
      * 
      * where:
      * 
