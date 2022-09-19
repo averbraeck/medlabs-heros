@@ -1056,6 +1056,20 @@ public class ConstructHerosModel
             }
             family.add(person.getId());
         }
+        
+        for (int homeLocationId : families.keys())
+        {
+            Location homeLocation = this.model.getLocationMap().get(homeLocationId);
+            int sub = homeLocation.getNumberOfSubLocations();
+            TIntSet family = families.get(homeLocationId);
+            if (family.size() == 0)
+                System.out.println("Home Location " + homeLocation.getId() + ": family size 0");
+            else if (family.size() < sub)
+                System.out.println("Home Location " + homeLocation.getId() + ": family size " + family.size() + ", sub = " + sub);
+            else if (family.size() / sub > 7)
+                System.out.println("Home Location " + homeLocation.getId() + ": family size > 7: " + family.size() / sub);
+            
+        }
     }
 
     /**
