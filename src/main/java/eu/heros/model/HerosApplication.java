@@ -79,6 +79,7 @@ public class HerosApplication extends DSOLAnimationApplication
     {
         String propertyFilename = (args.length > 0) ? args[0] : "/default.properties";
         boolean interactive = (args.length < 2) || !args[1].toLowerCase().equals("batch");
+        // boolean interactive = false;
         HerosModel model;
         if (interactive)
         {
@@ -102,7 +103,7 @@ public class HerosApplication extends DSOLAnimationApplication
                 model.getSimulator().initialize(0.0, 0.0, runLengthDays * 24.0, model, seed);
                 Bounds2d mapBounds = /* model.getExtent(); */ new Bounds2d(4.202, 4.482, 52.011, 52.133);
                 // DSOLAnimationGisTab gisTab =
-                // new DSOLAnimationGisTab(mapBounds, (SimpleAnimator) model.getSimulator());
+                // new DSOLAnimationGisTab(mapBounds, (SileAnimator) modempl.getSimulator());
                 MedlabsAnimationTab gisTab = new MedlabsAnimationTab(mapBounds, (SimpleAnimator) model.getSimulator());
                 gisTab.getAnimationPanel().setRenderableScale(
                         new RenderableScale(Math.cos(Math.toRadians(mapBounds.midPoint().getY())), 1.0 / 111319.24));
@@ -130,6 +131,14 @@ public class HerosApplication extends DSOLAnimationApplication
             model.setInteractive(false);
             ReadInputParameters.loadfromProperties(propertyFilename, model.getInputParameterMap());
             ReadInputParameters.loadFromArgs(args, true, model.getInputParameterMap());
+            String diseaseFilename = model.getParameterValue("generic.diseasePropertiesFile");
+            ReadInputParameters.loadfromProperties(diseaseFilename, model.getInputParameterMap());
+            setInputParametersDefaults(model.getInputParameterMap());
+            InputParameterMap generic = (InputParameterMap) model.getInputParameterMap().get("generic");
+            if (model.getParameterValue("generic.diseasePropertiesModel").equals("area"))
+                model.getInputParameterMap().remove("covidT_dist");
+            else
+                model.getInputParameterMap().remove("covidT_area");
             double runLengthDays = (double) model.getParameterValueInt("generic.RunLength");
             long seed = model.getParameterValueLong("generic.Seed");
             model.getSimulator().initialize(0.0, 0.0, runLengthDays * 24.0, model, seed);
