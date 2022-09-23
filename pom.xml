@@ -3,7 +3,7 @@
 
   <groupId>dsol</groupId>
   <artifactId>medlabs-heros</artifactId>
-  <version>1.0</version>
+  <version>2.1.0</version>
 
   <name>HERoS project disease spread</name>
   <description>HERoS project disease spread</description>
@@ -22,7 +22,7 @@
     <dependency>
       <groupId>nl.tudelft.simulation</groupId>
       <artifactId>medlabs</artifactId>
-      <version>2.01.00</version>
+      <version>2.1.0</version>
     </dependency>
     <dependency>
       <groupId>dsol</groupId>
