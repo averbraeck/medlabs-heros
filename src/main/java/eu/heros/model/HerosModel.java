@@ -1,7 +1,9 @@
 package eu.heros.model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -83,6 +85,12 @@ public class HerosModel extends AbstractMedlabsModel
     /** the types of persons for the week pattern change. */
     private Map<Class<? extends Person>, String> personTypes = new HashMap<>();
 
+    /** The file with nr of persons per location. */
+    private PrintWriter locationNrWriter;
+
+    /** The file with nr of persons per sublocation. */
+    private PrintWriter sublocationNrWriter;
+
     /**
      * Construct the model.
      * @param simulator SimpleDEVSSimulatorInterface; the simulator
@@ -158,6 +166,7 @@ public class HerosModel extends AbstractMedlabsModel
     {
         super.constructModel();
         schedulePolicies();
+        getSimulator().scheduleEventNow(this, this, "scheduleLocationDump", null);
         makePersonTypes();
 
         if (isInteractive())
@@ -219,6 +228,48 @@ public class HerosModel extends AbstractMedlabsModel
             System.out.print(".");
         }
         getSimulator().scheduleEventRel(1.0, this, this, "hourTick", null);
+    }
+
+    protected void scheduleLocationDump() throws FileNotFoundException
+    {
+        if (getParameterValueBoolean("generic.WriteOutput"))
+        {
+            String outputPath = getParameterValue("generic.OutputPath");
+
+            this.locationNrWriter = new PrintWriter(outputPath + "/locationNrPersons.csv");
+            this.locationNrWriter.print("\"Time(h)\",\"LocationNr\",\"NrPersons\"\n");
+            this.locationNrWriter.flush();
+
+            this.sublocationNrWriter = new PrintWriter(outputPath + "/sublocationNrPersons.csv");
+            this.sublocationNrWriter.print("\"Time(h)\",\"LocationNr\",\"SubLocationNr\",\"NrPersons\"\n");
+            this.sublocationNrWriter.flush();
+
+            locationDump();
+        }
+    }
+
+    protected void locationDump()
+    {
+        double time = getSimulator().getSimulatorTime();
+        for (LocationType locationType : this.locationTypeList)
+        {
+            for (Location location : locationType.getLocationMap().valueCollection())
+            {
+                if (location.getId() >= 0)
+                {
+                    this.locationNrWriter.print(time + "," + location.getId() + "," + location.getAllPersonIds().size() + "\n");
+                    for (int subLocationIndex = 1; subLocationIndex < location.getNumberOfSubLocations(); subLocationIndex++)
+                    {
+                        int nrSub = this.diseaseTransmission.getNrPersonsInSublocation(location, (short) subLocationIndex);
+                        this.sublocationNrWriter
+                                .print(time + "," + location.getId() + "," + subLocationIndex + "," + nrSub + "\n");
+                    }
+                }
+            }
+        }
+        this.locationNrWriter.flush();
+        this.sublocationNrWriter.flush();
+        getSimulator().scheduleEventRel(1.0, this, this, "locationDump", null);
     }
 
     /** {@inheritDoc} */
@@ -351,18 +402,18 @@ public class HerosModel extends AbstractMedlabsModel
                 "Viral load model; includes L, so I > L", 3.4, 0.0, 100.0, true, true, "%f", 2.0));
         covidTransmissionDistMap.add(new InputParameterDouble("C", "Clinical disease period C (days)",
                 "Viral load model; C starts after L", 3.0, 0.0, 100.0, true, true, "%f", 3.0));
-        covidTransmissionDistMap.add(new InputParameterDouble("v_max", "Peak viral load v_max", "Viral load model; > 0", 7.23, 0.0,
-                100.0, true, true, "%f", 4.0));
-        covidTransmissionDistMap.add(new InputParameterDouble("v_0", "Reference viral load v_0", "Transmission probability; > 0",
-                4.0, 0.0, 100.0, true, true, "%f", 5.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("v_max", "Peak viral load v_max", "Viral load model; > 0", 7.23,
+                0.0, 100.0, true, true, "%f", 4.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("v_0", "Reference viral load v_0",
+                "Transmission probability; > 0", 4.0, 0.0, 100.0, true, true, "%f", 5.0));
         covidTransmissionDistMap.add(new InputParameterDouble("r", "Transmission rate r", "Transmission probability; > 0",
                 2.294, 0.0, 100.0, true, true, "%f", 6.0));
-        covidTransmissionDistMap.add(new InputParameterDouble("psi", "Social distancing factor psi", "Infection probability; > 0",
-                3.0, 0.0, 100.0, true, true, "%f", 7.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("psi", "Social distancing factor psi",
+                "Infection probability; > 0", 3.0, 0.0, 100.0, true, true, "%f", 7.0));
         covidTransmissionDistMap.add(new InputParameterDouble("alpha", "Calibraton factor alpha", "Infection probability; > 0",
                 5.0, 0.0, 100.0, true, true, "%f", 8.0));
-        covidTransmissionDistMap.add(new InputParameterDouble("mu", "Mask effectiveness factor mu", "Infection probability; [0-1]",
-                0.0, 0.0, 1.0, true, true, "%f", 9.0));
+        covidTransmissionDistMap.add(new InputParameterDouble("mu", "Mask effectiveness factor mu",
+                "Infection probability; [0-1]", 0.0, 0.0, 1.0, true, true, "%f", 9.0));
         covidTransmissionDistMap.add(new InputParameterDouble("calculation_threshold",
                 "threshold for the transmission contact calculation (sec)",
                 "Below this contact duration, no infections will be calculated", 60, 0.0, 3600.0, true, true, "%f", 10.0));
