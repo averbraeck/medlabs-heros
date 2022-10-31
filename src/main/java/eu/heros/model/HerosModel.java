@@ -307,6 +307,7 @@ public class HerosModel extends AbstractMedlabsModel
     @Override
     protected void checkChangeWeekPattern()
     {
+        // System.out.println("checkChangeWeekPattern @ " + getSimulator().getSimulatorTime() + " h");
         for (Person person : getPersonMap().valueCollection())
         {
             if (person.getDiseasePhase().isDead())
@@ -315,7 +316,10 @@ public class HerosModel extends AbstractMedlabsModel
             String newWeekPatternName = getCurrentPolicy().getName() + "_" + person.getDiseasePhase().getName() + "_"
                     + this.personTypes.get(person.getClass());
             if (!getWeekPatternMap().containsKey(newWeekPatternName))
-                throw new MedlabsRuntimeException("Week pattern " + newWeekPatternName + " not found");
+            {
+                System.err.println("checkChangeWeekPattern - New week pattern " + newWeekPatternName + " not found");
+                // throw new MedlabsRuntimeException("Week pattern " + newWeekPatternName + " not found");
+            }
             if (!oldWeekPatternName.equals(newWeekPatternName))
             {
                 person.setCurrentWeekPattern(getWeekPatternMap().get(newWeekPatternName));
@@ -552,17 +556,21 @@ public class HerosModel extends AbstractMedlabsModel
     @Override
     public void checkChangeActivityPattern(final Person person)
     {
+        // System.out.println("checkChangeActivityPattern @ " + getSimulator().getSimulatorTime() + " h. for person " + person);
         if (person.getDiseasePhase().isDead())
             return;
         String diseasePhaseName = person.getDiseasePhase().getName();
         String personTypeName = this.personTypes.get(person.getClass());
         if (personTypeName == null)
         {
+            System.err.println("checkChangeActivityPattern - Person type name " + person.getClass() + " not found");
             throw new MedlabsRuntimeException("Person type name " + person.getClass() + " not found");
         }
         String weekPatternKey = getCurrentPolicy().getName() + "_" + diseasePhaseName + "_" + personTypeName;
         if (getWeekPatternMap().get(weekPatternKey) == null)
         {
+            System.err.println(
+                    "checkChangeActivityPattern - Week pattern key" + weekPatternKey + " not found in week pattern map");
             throw new MedlabsRuntimeException("Week pattern key" + weekPatternKey + " not found in week pattern map");
         }
         person.setCurrentWeekPattern(getWeekPatternMap().get(weekPatternKey));
