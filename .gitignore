@@ -26,3 +26,5 @@ hs_err_pid*
 
 # Temp files
 ~*
+/out_policies/
+/out_realistic/
