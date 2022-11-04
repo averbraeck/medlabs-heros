@@ -43,6 +43,8 @@ import eu.heros.person.WorkerCityToSatellite;
 import eu.heros.person.WorkerCountryToCity;
 import eu.heros.person.WorkerSatelliteToCity;
 import eu.heros.person.WorkerSatelliteToSatellite;
+import eu.heros.policy.DiseasePolicy;
+import eu.heros.policy.LocationPolicy;
 import gnu.trove.iterator.TIntObjectIterator;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.set.TIntSet;
@@ -143,6 +145,8 @@ public class ConstructHerosModel
             checkBasicWeekPatterns();
             readPersonTable();
             makeFamilies();
+            scheduleLocationPolicies();
+            scheduleDiseasePolicies();
             infectPersons();
             makeResultWriter();
         }
@@ -1056,7 +1060,7 @@ public class ConstructHerosModel
             }
             family.add(person.getId());
         }
-        
+
         for (int homeLocationId : families.keys())
         {
             Location homeLocation = this.model.getLocationMap().get(homeLocationId);
@@ -1065,10 +1069,11 @@ public class ConstructHerosModel
             if (family.size() == 0)
                 System.out.println("Home Location " + homeLocation.getId() + ": family size 0");
             else if (family.size() < sub)
-                System.out.println("Home Location " + homeLocation.getId() + ": family size " + family.size() + ", sub = " + sub);
+                System.out
+                        .println("Home Location " + homeLocation.getId() + ": family size " + family.size() + ", sub = " + sub);
             else if (family.size() / sub > 7)
                 System.out.println("Home Location " + homeLocation.getId() + ": family size > 7: " + family.size() / sub);
-            
+
         }
     }
 
@@ -1107,4 +1112,69 @@ public class ConstructHerosModel
             new ResultWriter(this.model, outputPath);
         }
     }
+
+    /**
+     * Read and schedule the location policies.
+     */
+    private void scheduleLocationPolicies() throws Exception
+    {
+        if (this.model.getParameterValue("policies.LocationPolicyFile").trim().length() == 0)
+            return;
+        File path = getFileFromParam("policies.LocationPolicyFile", "");
+        Reader reader = new InputStreamReader(new FileInputStream(path));
+        CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
+        CsvRow row;
+        List<String> data;
+        Iterator<CsvRow> it = csvReader.iterator();
+        if (it.hasNext())
+        {
+            row = it.next(); // skip header
+            while (it.hasNext())
+            {
+                // Time(d),LocationType,FractionOpen,FractionActivities,AlternativeLocation,ReportAsLocation
+                row = it.next();
+                data = row.getFields();
+                double time = 24.0 * Double.parseDouble(data.get(0));
+                String locationTypeName = data.get(1);
+                double fractionOpen = Double.parseDouble(data.get(2));
+                double fractionActivities = Double.parseDouble(data.get(3));
+                String alternativeLocationName = data.get(4);
+                String reportAsLocationName = data.get(5);
+                new LocationPolicy(this.model, time, locationTypeName, fractionOpen, fractionActivities,
+                        alternativeLocationName, reportAsLocationName);
+            }
+        }
+        csvReader.close();
+    }
+
+    /**
+     * Read and schedule the disease policies.
+     */
+    private void scheduleDiseasePolicies() throws Exception
+    {
+        if (this.model.getParameterValue("policies.DiseasePolicyFile").trim().length() == 0)
+            return;
+        File path = getFileFromParam("policies.DiseasePolicyFile", "");
+        Reader reader = new InputStreamReader(new FileInputStream(path));
+        CsvReader csvReader = CsvReader.builder().fieldSeparator(',').quoteCharacter('"').build(reader);
+        CsvRow row;
+        List<String> data;
+        Iterator<CsvRow> it = csvReader.iterator();
+        if (it.hasNext())
+        {
+            row = it.next(); // skip header
+            while (it.hasNext())
+            {
+                // Time(d),Parameter,Value
+                row = it.next();
+                data = row.getFields();
+                double time = 24.0 * Double.parseDouble(data.get(0));
+                String parameterName = data.get(1);
+                double value = Double.parseDouble(data.get(2));
+                new DiseasePolicy(this.model, time, parameterName, value);
+            }
+        }
+        csvReader.close();
+    }
+
 }
