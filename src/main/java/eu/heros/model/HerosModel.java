@@ -357,9 +357,9 @@ public class HerosModel extends AbstractMedlabsModel
                 0, 0, 100, "%d", 2.0));
         policyMap.add(new InputParameterInteger("MaxAgeInfected", "highest age of people infected at t=0", "between 0 and 100.",
                 100, 0, 100, "%d", 3.0));
-        policyMap.add(new InputParameterString("LocationPolicyFilePath", "path and name for the location policies file",
+        policyMap.add(new InputParameterString("LocationPolicyFile", "path and name for the location policies file",
                 "(blank means no policies)", "", 4.0));
-        policyMap.add(new InputParameterString("DiseasePolicyFilePath", "path and name for the disease policies file",
+        policyMap.add(new InputParameterString("DiseasePolicyFile", "path and name for the disease policies file",
                 "(blank means no policies)", "", 5.0));
 
         InputParameterMap covidTransmissionAreaMap = new InputParameterMap("covidT_area", "Covid Transmission by Area",
