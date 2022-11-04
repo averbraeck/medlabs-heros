@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.djutils.draw.bounds.Bounds2d;
@@ -45,8 +43,6 @@ import nl.tudelft.simulation.medlabs.location.LocationType;
 import nl.tudelft.simulation.medlabs.model.AbstractMedlabsModel;
 import nl.tudelft.simulation.medlabs.person.Person;
 import nl.tudelft.simulation.medlabs.person.index.IdxPerson;
-import nl.tudelft.simulation.medlabs.policy.ClosurePolicy;
-import nl.tudelft.simulation.medlabs.policy.Policy;
 import nl.tudelft.simulation.medlabs.properties.Properties;
 import nl.tudelft.simulation.medlabs.simulation.SimpleDEVSSimulatorInterface;
 
@@ -78,9 +74,6 @@ public class HerosModel extends AbstractMedlabsModel
 
     /** the extra person properties. */
     private Properties properties;
-
-    /** the currently activated policy. TODO: has to be changed as more policies can be active at the same time. */
-    private Policy currentPolicy;
 
     /** the types of persons for the week pattern change. */
     private Map<Class<? extends Person>, String> personTypes = new HashMap<>();
@@ -165,7 +158,6 @@ public class HerosModel extends AbstractMedlabsModel
     public void constructModel() throws SimRuntimeException
     {
         super.constructModel();
-        schedulePolicies();
         getSimulator().scheduleEventNow(this, this, "scheduleLocationDump", null);
         makePersonTypes();
 
@@ -279,9 +271,8 @@ public class HerosModel extends AbstractMedlabsModel
         new ConstructHerosModel(this);
         // XXX: hack -- this is not how we should do this...
         this.properties = new Properties(IdxPerson.class, getPersonMap().size());
-        this.currentPolicy = new Policy(this, "0");
     }
-
+    
     /**
      * Make the person types for the week pattern names.
      */
@@ -313,7 +304,7 @@ public class HerosModel extends AbstractMedlabsModel
             if (person.getDiseasePhase().isDead())
                 continue;
             String oldWeekPatternName = person.getCurrentWeekPattern().getName();
-            String newWeekPatternName = getCurrentPolicy().getName() + "_" + person.getDiseasePhase().getName() + "_"
+            String newWeekPatternName = "0_" + person.getDiseasePhase().getName() + "_"
                     + this.personTypes.get(person.getClass());
             if (!getWeekPatternMap().containsKey(newWeekPatternName))
             {
@@ -366,16 +357,10 @@ public class HerosModel extends AbstractMedlabsModel
                 0, 0, 100, "%d", 2.0));
         policyMap.add(new InputParameterInteger("MaxAgeInfected", "highest age of people infected at t=0", "between 0 and 100.",
                 100, 0, 100, "%d", 3.0));
-        policyMap.add(new InputParameterInteger("DayStartSoftLockdown", "day Soft Lockdown is effected (-1 is not)",
-                "number between -1 and 90", -1, -1, 90, "%d", 4.0));
-        policyMap.add(new InputParameterInteger("DayStartHardLockdown", "day Hard Lockdown is effected (-1 is not)",
-                "number between -1 and 90", -1, -1, 90, "%d", 5.0));
-        policyMap.add(new InputParameterInteger("DayStartSocialDist", "day Social Distancing is effected (-1 is not)",
-                "number between -1 and 90", -1, -1, 90, "%d", 6.0));
-        policyMap.add(new InputParameterDouble("SocialDistFactor", "Social Distancing factor sigma (between 0 and 1)",
-                "number between 0.0 and 1.0", 1.0, 0.0, 1.0, true, true, "%f.2", 6.5));
-        policyMap.add(new InputParameterInteger("DayStartWearMasks", "day Wear Masks is effected (-1 is not)",
-                "number between -1 and 90", -1, -1, 90, "%d", 7.0));
+        policyMap.add(new InputParameterString("LocationPolicyFilePath", "path and name for the location policies file",
+                "(blank means no policies)", "", 4.0));
+        policyMap.add(new InputParameterString("DiseasePolicyFilePath", "path and name for the disease policies file",
+                "(blank means no policies)", "", 5.0));
 
         InputParameterMap covidTransmissionAreaMap = new InputParameterMap("covidT_area", "Covid Transmission by Area",
                 "Covid Transmission parameters per area", 1.5);
@@ -461,98 +446,6 @@ public class HerosModel extends AbstractMedlabsModel
         root.add(covidProgressionMap);
     }
 
-    /**
-     * Schedule the policies at the start of day "n".
-     */
-    private void schedulePolicies()
-    {
-        int dayPolicy1 = getParameterValueInt("policies.DayStartSoftLockdown");
-        if (dayPolicy1 > 0)
-        {
-            getSimulator().scheduleEventAbs(24.0 * dayPolicy1, this, this, "startSoftLockdown", null);
-        }
-
-        int dayPolicy2 = getParameterValueInt("policies.DayStartHardLockdown");
-        if (dayPolicy2 > 0)
-        {
-            getSimulator().scheduleEventAbs(24.0 * dayPolicy2, this, this, "startHardLockdown", null);
-        }
-
-        int dayPolicy3 = getParameterValueInt("policies.DayStartSocialDist");
-        if (dayPolicy3 > 0)
-        {
-            getSimulator().scheduleEventAbs(24.0 * dayPolicy3, this, this, "startSocialDist", null);
-        }
-
-        int dayPolicy4 = getParameterValueInt("policies.DayStartWearMasks");
-        if (dayPolicy4 > 0)
-        {
-            getSimulator().scheduleEventAbs(24.0 * dayPolicy4, this, this, "startWearMask", null);
-        }
-
-    }
-
-    /**
-     * Policy 1 - Schools shut, bars and restaurants shut, recreation shut, parks open, all retail categories open and
-     * workplaces open.
-     */
-    protected void startSoftLockdown()
-    {
-        System.out.println("\nHour " + getSimulator().getSimulatorTime() + ": Start of policy 1 execution");
-        List<LocationType> closureLocations = new ArrayList<>();
-        closureLocations.add(getLocationTypeNameMap().get("BarRestaurant"));
-        closureLocations.add(getLocationTypeNameMap().get("Recreation"));
-        closureLocations.add(getLocationTypeNameMap().get("Kindergarten"));
-        closureLocations.add(getLocationTypeNameMap().get("PrimarySchool"));
-        closureLocations.add(getLocationTypeNameMap().get("SecondarySchool"));
-        closureLocations.add(getLocationTypeNameMap().get("College"));
-        closureLocations.add(getLocationTypeNameMap().get("University"));
-        ClosurePolicy policy1 = new ClosurePolicy(this, "1", closureLocations);
-        this.currentPolicy = policy1;
-        activatePolicy(policy1);
-        policy1.close(); // implement the policy
-    }
-
-    /**
-     * Policy 2 - All shut except pharmacy, supermarket and parks.
-     */
-    protected void startHardLockdown()
-    {
-        System.out.println("\nHour " + getSimulator().getSimulatorTime() + ": Start of policy 2 execution");
-        List<LocationType> closureLocations = new ArrayList<>();
-        closureLocations.add(getLocationTypeNameMap().get("Workplace"));
-        closureLocations.add(getLocationTypeNameMap().get("BarRestaurant"));
-        closureLocations.add(getLocationTypeNameMap().get("Retail"));
-        closureLocations.add(getLocationTypeNameMap().get("Mall"));
-        closureLocations.add(getLocationTypeNameMap().get("FoodBeverage"));
-        closureLocations.add(getLocationTypeNameMap().get("Kindergarten"));
-        closureLocations.add(getLocationTypeNameMap().get("PrimarySchool"));
-        closureLocations.add(getLocationTypeNameMap().get("SecondarySchool"));
-        closureLocations.add(getLocationTypeNameMap().get("College"));
-        closureLocations.add(getLocationTypeNameMap().get("University"));
-        closureLocations.add(getLocationTypeNameMap().get("Religion"));
-        closureLocations.add(getLocationTypeNameMap().get("Recreation"));
-        closureLocations.add(getLocationTypeNameMap().get("Healthcare"));
-        ClosurePolicy policy2 = new ClosurePolicy(this, "2", closureLocations);
-        this.currentPolicy = policy2;
-        activatePolicy(policy2);
-        policy2.close(); // implement the policy
-    }
-
-    /**
-     * Policy 3 - Social Distancing
-     */
-    protected void startSocialDist()
-    {
-        System.out.println("\nHour " + getSimulator().getSimulatorTime() + ": Start of SocialDist policy execution");
-        // Python - for lt:LocationType in locationTypeIdMap.values():
-        for (LocationType lt : this.locationTypeIdMap.values())
-        {
-            if (!lt.getName().equals("Accommodation"))
-                lt.setCorrectionFactorArea(getParameterValueDouble("policies.SocialDistFactor"));
-        }
-    }
-
     @Override
     public void checkChangeActivityPattern(final Person person)
     {
@@ -566,7 +459,7 @@ public class HerosModel extends AbstractMedlabsModel
             System.err.println("checkChangeActivityPattern - Person type name " + person.getClass() + " not found");
             throw new MedlabsRuntimeException("Person type name " + person.getClass() + " not found");
         }
-        String weekPatternKey = getCurrentPolicy().getName() + "_" + diseasePhaseName + "_" + personTypeName;
+        String weekPatternKey = "0_" + diseasePhaseName + "_" + personTypeName;
         if (getWeekPatternMap().get(weekPatternKey) == null)
         {
             System.err.println(
@@ -597,14 +490,6 @@ public class HerosModel extends AbstractMedlabsModel
     public void setBasePath(final String basePath)
     {
         this.basePath = basePath;
-    }
-
-    /**
-     * @return the currentPolicy
-     */
-    public Policy getCurrentPolicy()
-    {
-        return this.currentPolicy;
     }
 
 }
