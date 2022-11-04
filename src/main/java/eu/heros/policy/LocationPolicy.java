@@ -39,6 +39,9 @@ public class LocationPolicy
     protected void openCloseLocationType(final LocationType locationType, final double fractionOpen,
             final double fractionActivities, final LocationType alternativeLocationType, final String reportAsLocationName)
     {
+        System.out.println(String.format("Time = %f: LocationPolicy for location %s -> %s, open=%f, activities=%f ",
+                this.model.getSimulator().getSimulatorTime(), locationType.getName(), alternativeLocationType.getName(),
+                fractionOpen, fractionActivities));
         locationType.setClosurePolicy(fractionOpen, fractionActivities, alternativeLocationType, reportAsLocationName);
     }
 }

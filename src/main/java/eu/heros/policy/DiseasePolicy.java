@@ -28,7 +28,8 @@ public class DiseasePolicy
 
     protected void changeParameter(final String parameterName, final double value)
     {
-        System.out.println(String.format("DiseasePolicy changed parameter %s to %f", parameterName, value));
+        System.out.println(String.format("Time = %f: DiseasePolicy changed parameter %s to %f",
+                this.model.getSimulator().getSimulatorTime(), parameterName, value));
         if (parameterName.equals("covidT_dist.psi"))
         {
             this.model.getDiseaseTransmission().setParameter("psi", value);
