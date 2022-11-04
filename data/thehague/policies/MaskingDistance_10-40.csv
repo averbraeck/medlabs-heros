@@ -1,10 +1,5 @@
 Time(d),Parameter,Value
-0,covidT_dist.psi,1.0
-0,covidT_dist.alpha,0.05
-0,covidT_dist.mu,0.0
-10,covidT_dist.psi,0.5
-10,covidT_dist.alpha,0.05
+10,covidT_dist.psi,2.0
 10,covidT_dist.mu,0.6
 40,covidT_dist.psi,1.0
-40,covidT_dist.alpha,0.05
 40,covidT_dist.mu,0.0
