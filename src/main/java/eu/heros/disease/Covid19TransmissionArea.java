@@ -258,4 +258,10 @@ public class Covid19TransmissionArea extends DiseaseTransmission
         return true;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void setParameter(final String parameterName, final double value)
+    {
+        System.err.println("Unrecognized variable name " + parameterName);
+    }
 }

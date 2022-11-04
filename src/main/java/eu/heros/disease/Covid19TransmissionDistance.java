@@ -33,13 +33,13 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
     private final double r;
 
     /** Social distancing factor psi (positive). */
-    private final double psi;
+    private double psi;
 
     /** Calibraton factor alpha (positive). */
     private final double alpha;
 
     /** Mask effectiveness mu from interval [0, 1]. */
-    private final double mu;
+    private double mu;
 
     /**
      * Parameter to indicate when the duration is too short to make an infection calculation (converted to hours). Note that for
@@ -256,6 +256,22 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
             }
         }
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setParameter(final String parameterName, final double value)
+    {
+        if (parameterName.equals("psi"))
+        {
+            this.psi = value;
+        }
+        else if (parameterName.equals("mu"))
+        {
+            this.mu = value;
+        }
+        else
+            System.err.println("Unrecognized variable name " + parameterName);
     }
 
 }
