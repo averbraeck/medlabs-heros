@@ -19,7 +19,7 @@ import java.util.zip.GZIPInputStream;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.djunits.Throw;
+import org.djutils.exceptions.Throw;
 import org.djutils.io.URLResource;
 
 import de.siegmar.fastcsv.reader.CsvReader;

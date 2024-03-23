@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,9 +28,9 @@ import eu.heros.person.WorkerCountryToCity;
 import eu.heros.person.WorkerSatelliteToCity;
 import eu.heros.person.WorkerSatelliteToSatellite;
 import nl.tudelft.simulation.dsol.SimRuntimeException;
-import nl.tudelft.simulation.dsol.animation.gis.GisRenderable2D;
+import nl.tudelft.simulation.dsol.animation.gis.GisRenderable2d;
 import nl.tudelft.simulation.dsol.animation.gis.osm.OsmFileCsvParser;
-import nl.tudelft.simulation.dsol.animation.gis.osm.OsmRenderable2D;
+import nl.tudelft.simulation.dsol.animation.gis.osm.OsmRenderable2d;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterDouble;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterException;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterInteger;
@@ -44,7 +43,7 @@ import nl.tudelft.simulation.medlabs.model.AbstractMedlabsModel;
 import nl.tudelft.simulation.medlabs.person.Person;
 import nl.tudelft.simulation.medlabs.person.index.IdxPerson;
 import nl.tudelft.simulation.medlabs.properties.Properties;
-import nl.tudelft.simulation.medlabs.simulation.SimpleDEVSSimulatorInterface;
+import nl.tudelft.simulation.medlabs.simulation.SimpleDevsSimulatorInterface;
 
 /**
  * HerosModel.java.
@@ -67,7 +66,7 @@ public class HerosModel extends AbstractMedlabsModel
     private String basePath;
 
     /** the GIS map. */
-    private GisRenderable2D gisMap;
+    private GisRenderable2d gisMap;
 
     /** the cached extent. */
     private Bounds2d extent = null;
@@ -86,20 +85,14 @@ public class HerosModel extends AbstractMedlabsModel
 
     /**
      * Construct the model.
-     * @param simulator SimpleDEVSSimulatorInterface; the simulator
+     * @param simulator SimpleDevsSimulatorInterface; the simulator
      * @param propertyFilename String; the path of the property file name to use
      */
-    public HerosModel(final SimpleDEVSSimulatorInterface simulator, final String propertyFilename)
+    public HerosModel(final SimpleDevsSimulatorInterface simulator, final String propertyFilename)
     {
         super(simulator, propertyFilename);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Serializable getSourceId()
-    {
-        return "MEDLABS HERoS Model";
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -158,7 +151,7 @@ public class HerosModel extends AbstractMedlabsModel
     public void constructModel() throws SimRuntimeException
     {
         super.constructModel();
-        getSimulator().scheduleEventNow(this, this, "scheduleLocationDump", null);
+        getSimulator().scheduleEventNow(this, "scheduleLocationDump", null);
         makePersonTypes();
 
         if (isInteractive())
@@ -184,7 +177,7 @@ public class HerosModel extends AbstractMedlabsModel
                     System.out.println("GIS map file: " + osmUrl.toString());
                     try
                     {
-                        this.gisMap = new OsmRenderable2D(getSimulator().getReplication(),
+                        this.gisMap = new OsmRenderable2d(getSimulator().getReplication(),
                                 OsmFileCsvParser.parseMapFile(csvUrl, osmUrl, "The Hague"));
                     }
                     catch (IOException exception)
@@ -196,14 +189,14 @@ public class HerosModel extends AbstractMedlabsModel
         }
         else
         {
-            getSimulator().scheduleEventNow(this, this, "hourTick", null);
+            getSimulator().scheduleEventNow(this, "hourTick", null);
         }
     }
 
     /**
      * @return gisMap
      */
-    public GisRenderable2D getGisMap()
+    public GisRenderable2d getGisMap()
     {
         return this.gisMap;
     }
@@ -219,7 +212,7 @@ public class HerosModel extends AbstractMedlabsModel
         {
             System.out.print(".");
         }
-        getSimulator().scheduleEventRel(1.0, this, this, "hourTick", null);
+        getSimulator().scheduleEventRel(1.0, this, "hourTick", null);
     }
 
     protected void scheduleLocationDump() throws FileNotFoundException
@@ -261,7 +254,7 @@ public class HerosModel extends AbstractMedlabsModel
         }
         this.locationNrWriter.flush();
         this.sublocationNrWriter.flush();
-        getSimulator().scheduleEventRel(1.0, this, this, "locationDump", null);
+        getSimulator().scheduleEventRel(1.0, this, "locationDump", null);
     }
 
     /** {@inheritDoc} */
@@ -316,7 +309,7 @@ public class HerosModel extends AbstractMedlabsModel
                 person.setCurrentWeekPattern(getWeekPatternMap().get(newWeekPatternName));
             }
         }
-        getSimulator().scheduleEventRel(24.0, this, this, "checkChangeWeekPattern", null);
+        getSimulator().scheduleEventRel(24.0, this, "checkChangeWeekPattern", null);
     }
 
     @Override

@@ -188,14 +188,14 @@ public class Covid19Progression extends DiseaseProgression
         if (this.model.getU01().draw() < this.fractionAsymptomatic.probability(exposedPerson))
         {
             double incubationPeriod = this.periodIncubationAsymptomatic.getDuration();
-            this.model.getSimulator().scheduleEventRel(incubationPeriod, this, this, "changeDiseasePhase",
+            this.model.getSimulator().scheduleEventRel(incubationPeriod, this, "changeDiseasePhase",
                     new Object[] {exposedPerson, Covid19Progression.infected_asymptomatic});
             return true;
         }
         else
         {
             double incubationPeriod = this.periodIncubationSymptomatic.getDuration();
-            this.model.getSimulator().scheduleEventRel(incubationPeriod, this, this, "changeDiseasePhase",
+            this.model.getSimulator().scheduleEventRel(incubationPeriod, this, "changeDiseasePhase",
                     new Object[] {exposedPerson, Covid19Progression.infected_symptomatic});
             return true;
         }
@@ -230,7 +230,7 @@ public class Covid19Progression extends DiseaseProgression
             person.setDiseasePhase(infected_asymptomatic);
             infected_asymptomatic.addPerson();
 
-            model.getSimulator().scheduleEventRel(this.periodAsymptomaticToRecovered.getDuration(), TimeUnit.HOUR, this, this,
+            model.getSimulator().scheduleEventRel(this.periodAsymptomaticToRecovered.getDuration(), TimeUnit.HOUR, this,
                     "changeDiseasePhase", new Object[] {person, recovered});
             return;
         }
@@ -246,10 +246,10 @@ public class Covid19Progression extends DiseaseProgression
 
             if (this.model.getU01().draw() < this.fractionSymptomaticToHospitalized.probability(person))
                 model.getSimulator().scheduleEventRel(this.periodSymptomaticToHospitalized.getDuration(), TimeUnit.HOUR, this,
-                        this, "changeDiseasePhase", new Object[] {person, hospitalized});
+                        "changeDiseasePhase", new Object[] {person, hospitalized});
             else
                 model.getSimulator().scheduleEventRel(this.periodSymptomaticToRecovered.getDuration(), TimeUnit.HOUR, this,
-                        this, "changeDiseasePhase", new Object[] {person, recovered});
+                        "changeDiseasePhase", new Object[] {person, recovered});
             return;
         }
 
@@ -265,7 +265,7 @@ public class Covid19Progression extends DiseaseProgression
             if (this.model.getU01().draw() < this.fractionHospitalizedToICU.probability(person))
             {
                 // Person goes to ICU
-                model.getSimulator().scheduleEventRel(this.periodHospitalizedToICU.getDuration(), TimeUnit.HOUR, this, this,
+                model.getSimulator().scheduleEventRel(this.periodHospitalizedToICU.getDuration(), TimeUnit.HOUR, this,
                         "changeDiseasePhase", new Object[] {person, icu});
                 return;
             }
@@ -276,13 +276,13 @@ public class Covid19Progression extends DiseaseProgression
                 if (this.model.getU01().draw() < this.fractionHospitalizedToDead.probability(person))
                 {
                     model.getSimulator().scheduleEventRel(this.periodHospitalizedToDead.getDuration(), TimeUnit.HOUR, this,
-                            this, "changeDiseasePhase", new Object[] {person, dead});
+                            "changeDiseasePhase", new Object[] {person, dead});
                     return;
                 }
                 else
                 {
                     model.getSimulator().scheduleEventRel(this.periodHospitalizedToRecovered.getDuration(), TimeUnit.HOUR, this,
-                            this, "changeDiseasePhase", new Object[] {person, recovered});
+                            "changeDiseasePhase", new Object[] {person, recovered});
                     return;
                 }
             }
@@ -300,14 +300,14 @@ public class Covid19Progression extends DiseaseProgression
             // Recover or die at ICU
             if (this.model.getU01().draw() < this.fractionICUToDead.probability(person))
             {
-                model.getSimulator().scheduleEventRel(this.periodICUToDead.getDuration(), TimeUnit.HOUR, this, this,
+                model.getSimulator().scheduleEventRel(this.periodICUToDead.getDuration(), TimeUnit.HOUR, this,
                         "changeDiseasePhase", new Object[] {person, dead});
                 return;
             }
 
             else
             {
-                model.getSimulator().scheduleEventRel(this.periodICUToRecovered.getDuration(), TimeUnit.HOUR, this, this,
+                model.getSimulator().scheduleEventRel(this.periodICUToRecovered.getDuration(), TimeUnit.HOUR, this,
                         "changeDiseasePhase", new Object[] {person, recovered});
                 return;
             }

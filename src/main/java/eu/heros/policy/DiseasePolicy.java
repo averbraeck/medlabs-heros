@@ -23,7 +23,7 @@ public class DiseasePolicy
             System.err.println("Unrecognized variable name " + parameterName);
             return;
         }
-        model.getSimulator().scheduleEventAbs(time, this, this, "changeParameter", new Object[] {parameterName, value});
+        model.getSimulator().scheduleEventAbs(time, this, "changeParameter", new Object[] {parameterName, value});
     }
 
     protected void changeParameter(final String parameterName, final double value)

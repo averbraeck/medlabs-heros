@@ -32,7 +32,7 @@ public class LocationPolicy
             System.err.println("LocationPolicy: Did not recognize alternativeLocationType " + alternativeLocationName);
             return;
         }
-        model.getSimulator().scheduleEventAbs(time, this, this, "openCloseLocationType",
+        model.getSimulator().scheduleEventAbs(time, this, "openCloseLocationType",
                 new Object[] {locationType, fractionOpen, fractionActivities, alternativeLocationType, reportAsLocationName});
     }
 
