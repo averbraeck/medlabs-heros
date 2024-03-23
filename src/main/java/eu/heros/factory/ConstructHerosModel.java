@@ -1094,7 +1094,7 @@ public class ConstructHerosModel
             {
                 if (person.getAge() >= ageMin && person.getAge() <= ageMax)
                 {
-                    this.model.getDiseaseProgression().changeDiseasePhase(person, Covid19Progression.exposed);
+                    this.model.getDiseaseProgression().expose(person, Covid19Progression.exposed);
                     numberToInfect--;
                 }
             }

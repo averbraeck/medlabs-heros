@@ -1,6 +1,8 @@
 package eu.heros.disease;
 
 import gnu.trove.iterator.TIntIterator;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.set.TIntSet;
 import nl.tudelft.simulation.medlabs.disease.DiseaseTransmission;
@@ -121,6 +123,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
         double area = location.getTotalSurfaceM2();
 
         TIntObjectMap<Person> personMap = this.model.getPersonMap();
+        TIntList infectiousPersonList = new TIntArrayList();
         double now = this.model.getSimulator().getSimulatorTime().doubleValue();
 
         if (lt.isInfectInSublocation() || location.getNumberOfSubLocations() < 2)
@@ -164,6 +167,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                             maxVt = v_t;
                             mostInfectiousPerson = person;
                         }
+                        infectiousPersonList.add(person.getId());
                     }
                 }
             }
@@ -183,7 +187,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                     {
                         person.setExposureTime((float) now);
                         this.model.getPersonMonitor().reportExposure(person, location, mostInfectiousPerson);
-                        this.model.getDiseaseProgression().changeDiseasePhase(person, Covid19Progression.exposed);
+                        this.model.getDiseaseProgression().expose(person, Covid19Progression.exposed, infectiousPersonList);
                     }
                 }
             }
@@ -230,6 +234,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                             maxVt = v_t;
                             mostInfectiousPerson = person;
                         }
+                        infectiousPersonList.add(person.getId());
                     }
                 }
             }
@@ -250,7 +255,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                     {
                         person.setExposureTime((float) now);
                         this.model.getPersonMonitor().reportExposure(person, location, mostInfectiousPerson);
-                        this.model.getDiseaseProgression().changeDiseasePhase(person, Covid19Progression.exposed);
+                        this.model.getDiseaseProgression().expose(person, Covid19Progression.exposed, infectiousPersonList);
                     }
                 }
             }
