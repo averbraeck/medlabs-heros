@@ -179,8 +179,9 @@ public class Covid19Progression extends DiseaseProgression
 
     /** {@inheritDoc} */
     @Override
-    public boolean expose(final Person exposedPerson, final DiseasePhase exposurePhase)
+    public void expose(final Person exposedPerson, final DiseasePhase exposurePhase)
     {
+        exposedPerson.getDiseasePhase().removePerson();
         exposedPerson.setDiseasePhase(exposed);
         exposed.addPerson();
 
@@ -190,14 +191,12 @@ public class Covid19Progression extends DiseaseProgression
             double incubationPeriod = this.periodIncubationAsymptomatic.getDuration();
             this.model.getSimulator().scheduleEventRel(incubationPeriod, this, "changeDiseasePhase",
                     new Object[] {exposedPerson, Covid19Progression.infected_asymptomatic});
-            return true;
         }
         else
         {
             double incubationPeriod = this.periodIncubationSymptomatic.getDuration();
             this.model.getSimulator().scheduleEventRel(incubationPeriod, this, "changeDiseasePhase",
                     new Object[] {exposedPerson, Covid19Progression.infected_symptomatic});
-            return true;
         }
     }
 

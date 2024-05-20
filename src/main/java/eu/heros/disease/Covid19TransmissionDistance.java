@@ -1,11 +1,10 @@
 package eu.heros.disease;
 
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.set.TIntSet;
 import nl.tudelft.simulation.medlabs.disease.DiseaseTransmission;
+import nl.tudelft.simulation.medlabs.disease.InfectionRecord;
 import nl.tudelft.simulation.medlabs.location.Location;
 import nl.tudelft.simulation.medlabs.location.LocationType;
 import nl.tudelft.simulation.medlabs.model.MedlabsModelInterface;
@@ -109,21 +108,24 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
      * @param location Location; the location for which to calculate infectious spread
      * @param subLocationIndex int; the sublocation for which to calculate possible infection(s)
      * @param duration double; the time for which the calculation needs to take place, in hours
-     * @return boolean; whether a calculation took place and the last calculation time in DiseaseTransmission can be updated
+     * @return InfectionRecord; record containing information whether a calculation took place and the last calculation time in
+     *         DiseaseTransmission can be updated, and on the infected and infectious persons in case a calculation was made.
      */
     @Override
-    public boolean infectPeople(final Location location, final TIntSet personsInSublocation, final double duration)
+    public InfectionRecord infectPeople(final Location location, final TIntSet personsInSublocation, final double duration)
     {
+        InfectionRecord infectionRecord = new InfectionRecord(Covid19Progression.exposed);
+
         // has contact been too short?
         if (duration < this.calculationThreshold)
-            return false;
+            return infectionRecord;
+        infectionRecord.setCalculated(true);
 
         // find the infectious persons in the sublocation
         LocationType lt = location.getLocationType();
         double area = location.getTotalSurfaceM2();
 
         TIntObjectMap<Person> personMap = this.model.getPersonMap();
-        TIntList infectiousPersonList = new TIntArrayList();
         double now = this.model.getSimulator().getSimulatorTime().doubleValue();
 
         if (lt.isInfectInSublocation() || location.getNumberOfSubLocations() < 2)
@@ -140,12 +142,10 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
             double sigma = 1.0 - 1.0 / (1.0 + Math.exp(-3.0 * (Math.max(Delta, this.psi) - 1.5)));
             double factor = sigma * this.alpha * (1.0 - this.mu) * (1.0 - this.mu);
             if (factor == 0.0)
-                return true;
+                return infectionRecord;
 
             // find the infectious persons in the sublocation
             double sum = 0.0;
-            double maxVt = 0.0;
-            Person mostInfectiousPerson = null;
             for (TIntIterator it = personsInSublocation.iterator(); it.hasNext();)
             {
                 Person person = personMap.get(it.next());
@@ -162,17 +162,12 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                     {
                         double Pt = 1 / (1 + Math.exp(-this.r * (v_t - this.v_0)));
                         sum += factor * duration * Pt;
-                        if (v_t > maxVt)
-                        {
-                            maxVt = v_t;
-                            mostInfectiousPerson = person;
-                        }
-                        infectiousPersonList.add(person.getId());
+                        infectionRecord.addInfectiousPerson(person.getId());
                     }
                 }
             }
             if (sum == 0.0)
-                return true;
+                return infectionRecord;
 
             // calculate the probability for all persons present in the sublocation
             double pInfection = 1.0 - Math.exp(-sum);
@@ -185,9 +180,7 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                     // roll the dice
                     if (this.model.getU01().draw() < pInfection)
                     {
-                        person.setExposureTime((float) now);
-                        this.model.getPersonMonitor().reportExposure(person, location, mostInfectiousPerson);
-                        this.model.getDiseaseProgression().expose(person, Covid19Progression.exposed, infectiousPersonList);
+                        infectionRecord.addInfectedPerson(person.getId());
                     }
                 }
             }
@@ -207,12 +200,10 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
             double sigma = 1.0 - 1.0 / (1.0 + Math.exp(-3.0 * (Math.max(Delta, this.psi) - 1.5)));
             double factor = sigma * this.alpha * (1.0 - this.mu) * (1.0 - this.mu);
             if (factor == 0.0)
-                return true;
+                return infectionRecord;
 
             // find the infectious persons in the sublocation
             double sum = 0.0;
-            double maxVt = 0.0;
-            Person mostInfectiousPerson = null;
             for (TIntIterator it = location.getAllPersonIds().iterator(); it.hasNext();)
             {
                 Person person = personMap.get(it.next());
@@ -229,17 +220,12 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                     {
                         double Pt = 1 / (1 + Math.exp(-this.r * (v_t - this.v_0)));
                         sum += factor * duration * Pt;
-                        if (v_t > maxVt)
-                        {
-                            maxVt = v_t;
-                            mostInfectiousPerson = person;
-                        }
-                        infectiousPersonList.add(person.getId());
+                        infectionRecord.addInfectiousPerson(person.getId());
                     }
                 }
             }
             if (sum == 0.0)
-                return true;
+                return infectionRecord;
 
             // calculate the probability for all persons present
             double pInfection = 1.0 - Math.exp(-sum);
@@ -253,14 +239,12 @@ public class Covid19TransmissionDistance extends DiseaseTransmission
                     // roll the dice
                     if (this.model.getU01().draw() < pInfection)
                     {
-                        person.setExposureTime((float) now);
-                        this.model.getPersonMonitor().reportExposure(person, location, mostInfectiousPerson);
-                        this.model.getDiseaseProgression().expose(person, Covid19Progression.exposed, infectiousPersonList);
+                        infectionRecord.addInfectedPerson(person.getId());
                     }
                 }
             }
         }
-        return true;
+        return infectionRecord;
     }
 
     /** {@inheritDoc} */
