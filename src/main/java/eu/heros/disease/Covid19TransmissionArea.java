@@ -132,7 +132,7 @@ public class Covid19TransmissionArea extends DiseaseTransmission
     @Override
     public InfectionRecord infectPeople(final Location location, final TIntSet personsInSublocation, final double duration)
     {
-        InfectionRecord infectionRecord = new InfectionRecord(Covid19Progression.exposed);
+        InfectionRecord infectionRecord = new InfectionRecord(Covid19Progression.exposed, location);
 
         // has contact been too short?
         if (duration < this.calculationThreshold)
