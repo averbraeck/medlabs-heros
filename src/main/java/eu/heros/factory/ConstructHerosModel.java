@@ -235,7 +235,10 @@ public class ConstructHerosModel
         Iterator<CsvRow> it = csvReader.iterator();
         if (it.hasNext())
         {
-            row = it.next(); // skip header
+            row = it.next(); // test header for capacity constraints
+            data = row.getFields();
+            int capConstrainedIndex = data.indexOf("capConstrained");
+            int capIndex = data.indexOf("capPersonsPerM2");
             while (it.hasNext())
             {
                 row = it.next();
@@ -249,8 +252,11 @@ public class ConstructHerosModel
                 // Class.forName(ltClassName);
                 Class<? extends LocationAnimation> ltAniClass =
                         (Class<? extends LocationAnimation>) Class.forName(ltAniClassName);
+                double cap = capIndex < 0 ? 0.5 : Double.parseDouble(data.get(capIndex));
+                boolean capConstrained =
+                        capConstrainedIndex < 0 ? false : data.get(capConstrainedIndex).toLowerCase().equals("true");
                 new LocationType(this.model, id, ltName, Location.class, ltAniClass, reproducible, infectSub,
-                        contagiousRateFactor);
+                        contagiousRateFactor, capConstrained, cap);
                 id++;
             }
         }
@@ -360,8 +366,8 @@ public class ConstructHerosModel
                         if (!this.model.getLocationTypeIndexMap().containsKey(b))
                         {
                             System.err.println("Warning: LocationType added - " + locationCategory);
-                            locationType =
-                                    new LocationType(this.model, b, locationCategory, Location.class, null, false, true, 1.0);
+                            locationType = new LocationType(this.model, b, locationCategory, Location.class, null, false, true,
+                                    1.0, false, 0.25);
                             break;
                         }
                     }
