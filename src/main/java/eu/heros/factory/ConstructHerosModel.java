@@ -67,9 +67,13 @@ import nl.tudelft.simulation.medlabs.activity.locator.DistanceBasedTravelLocator
 import nl.tudelft.simulation.medlabs.activity.locator.HomeLocator;
 import nl.tudelft.simulation.medlabs.activity.locator.LocatorInterface;
 import nl.tudelft.simulation.medlabs.activity.locator.NearestLocator;
+import nl.tudelft.simulation.medlabs.activity.locator.NearestLocatorCap;
 import nl.tudelft.simulation.medlabs.activity.locator.NearestLocatorChoice;
+import nl.tudelft.simulation.medlabs.activity.locator.NearestLocatorChoiceCap;
 import nl.tudelft.simulation.medlabs.activity.locator.RandomLocator;
+import nl.tudelft.simulation.medlabs.activity.locator.RandomLocatorCap;
 import nl.tudelft.simulation.medlabs.activity.locator.RandomLocatorChoice;
+import nl.tudelft.simulation.medlabs.activity.locator.RandomLocatorChoiceCap;
 import nl.tudelft.simulation.medlabs.activity.locator.SchoolLocator;
 import nl.tudelft.simulation.medlabs.activity.locator.WalkLocator;
 import nl.tudelft.simulation.medlabs.activity.locator.WorkLocator;
@@ -990,6 +994,13 @@ public class ConstructHerosModel
                     return new NearestLocatorChoice(new CurrentLocator(), resolveLocationTypeChoice(locationType), false);
                 }
                 return new NearestLocator(new CurrentLocator(), resolveLocationType(locationType));
+            case "NearestLocatorCap":
+            case "NearestLocatorChoiceCap":
+                if (locationType.contains(":"))
+                {
+                    return new NearestLocatorChoiceCap(new CurrentLocator(), resolveLocationTypeChoice(locationType), false);
+                }
+                return new NearestLocatorCap(new CurrentLocator(), resolveLocationType(locationType));
             case "RandomLocator":
             case "RandomLocatorChoice":
                 if (locationType.contains(":"))
@@ -998,6 +1009,14 @@ public class ConstructHerosModel
                             false);
                 }
                 return new RandomLocator(new CurrentLocator(), resolveLocationType(locationType), maxDistance, false);
+            case "RandomLocatorCap":
+            case "RandomLocatorChoiceCap":
+                if (locationType.contains(":"))
+                {
+                    return new RandomLocatorChoiceCap(new CurrentLocator(), resolveLocationTypeChoice(locationType), maxDistance,
+                            false);
+                }
+                return new RandomLocatorCap(new CurrentLocator(), resolveLocationType(locationType), maxDistance, false);
 
             default:
                 throw new MedlabsException("unknown locatorString in activity xlsx file: " + locatorString);
