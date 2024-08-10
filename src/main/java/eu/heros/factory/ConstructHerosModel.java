@@ -243,6 +243,7 @@ public class ConstructHerosModel
             data = row.getFields();
             int capConstrainedIndex = data.indexOf("capConstrained");
             int capIndex = data.indexOf("capPersonsPerM2");
+            int sizeFactorIndex = data.indexOf("sizeFactor");
             while (it.hasNext())
             {
                 row = it.next();
@@ -259,8 +260,9 @@ public class ConstructHerosModel
                 double cap = capIndex < 0 ? 0.5 : Double.parseDouble(data.get(capIndex));
                 boolean capConstrained =
                         capConstrainedIndex < 0 ? false : data.get(capConstrainedIndex).toLowerCase().equals("true");
+                double sizeFactor = sizeFactorIndex < 0 ? 1.0 : Double.parseDouble(data.get(sizeFactorIndex));
                 new LocationType(this.model, id, ltName, Location.class, ltAniClass, reproducible, infectSub,
-                        contagiousRateFactor, capConstrained, cap);
+                        contagiousRateFactor, capConstrained, cap, sizeFactor);
                 id++;
             }
         }
@@ -371,23 +373,22 @@ public class ConstructHerosModel
                         {
                             System.err.println("Warning: LocationType added - " + locationCategory);
                             locationType = new LocationType(this.model, b, locationCategory, Location.class, null, false, true,
-                                    1.0, false, 0.25);
+                                    1.0, false, 0.25, 1.0);
                             break;
                         }
                     }
                 }
-                byte locationTypeId = locationType.getLocationTypeId();
                 float area = subArea * nbSublocations;
                 if (this.probBasedInfectLoc.containsKey(locationId))
                 {
                     double infectionRateFactor = this.probBasedInfectLoc.get(locationId)[0];
                     double infectionRate = this.probBasedInfectLoc.get(locationId)[1];
-                    new LocationProbBased(this.model, locationId, locationTypeId, lat, lon, nbSublocations, area,
+                    new LocationProbBased(this.model, locationId, locationType, lat, lon, nbSublocations, area,
                             infectionRateFactor, infectionRate, referenceGroupMap, Covid19Progression.exposed);
                 }
                 else
                 {
-                    new Location(this.model, locationId, locationTypeId, lat, lon, nbSublocations, area);
+                    new Location(this.model, locationId, locationType, lat, lon, nbSublocations, area);
                 }
             }
         }
@@ -1013,8 +1014,8 @@ public class ConstructHerosModel
             case "RandomLocatorChoiceCap":
                 if (locationType.contains(":"))
                 {
-                    return new RandomLocatorChoiceCap(new CurrentLocator(), resolveLocationTypeChoice(locationType), maxDistance,
-                            false);
+                    return new RandomLocatorChoiceCap(new CurrentLocator(), resolveLocationTypeChoice(locationType),
+                            maxDistance, false);
                 }
                 return new RandomLocatorCap(new CurrentLocator(), resolveLocationType(locationType), maxDistance, false);
 
