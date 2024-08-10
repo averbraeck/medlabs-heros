@@ -32,3 +32,6 @@ hs_err_pid*
 /temp
 /out_realistic_test/
 /out_test/
+/out_20240807/
+/out_capacity/
+/out_extracap/
