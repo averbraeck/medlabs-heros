@@ -1,23 +1,23 @@
-name,animationClass,reproducible,infectSub,infectTotal,contagiousRateFactor,infectionProbabilityFactor,capConstrained,capPersonsPerM2
-Accommodation,nl.tudelft.simulation.medlabs.location.animation.defaults.HouseAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.25
-Workplace,nl.tudelft.simulation.medlabs.location.animation.defaults.WorkplaceAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-Retail,nl.tudelft.simulation.medlabs.location.animation.defaults.RetailAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25
-Mall,nl.tudelft.simulation.medlabs.location.animation.defaults.MallAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.1
-BarRestaurant,nl.tudelft.simulation.medlabs.location.animation.defaults.RestaurantAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.5
-FoodBeverage,nl.tudelft.simulation.medlabs.location.animation.defaults.FoodBeverageAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.5
-Supermarket,nl.tudelft.simulation.medlabs.location.animation.defaults.SupermarketAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.2
-Kindergarten,nl.tudelft.simulation.medlabs.location.animation.defaults.KindergartenAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-PrimarySchool,nl.tudelft.simulation.medlabs.location.animation.defaults.SchoolAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-SecondarySchool,nl.tudelft.simulation.medlabs.location.animation.defaults.SchoolAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-College,nl.tudelft.simulation.medlabs.location.animation.defaults.CollegeAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-University,nl.tudelft.simulation.medlabs.location.animation.defaults.UniversityAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-Religion,nl.tudelft.simulation.medlabs.location.animation.defaults.ReligionAnimation,TRUE,TRUE,FALSE,1,1,TRUE,0.5
-Police,nl.tudelft.simulation.medlabs.location.animation.defaults.PoliceAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-FireStation,nl.tudelft.simulation.medlabs.location.animation.defaults.FireStationAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5
-Pharmacy,nl.tudelft.simulation.medlabs.location.animation.defaults.PharmacyAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.5
-Healthcare,nl.tudelft.simulation.medlabs.location.animation.defaults.MedServiceAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25
-Hospital,nl.tudelft.simulation.medlabs.location.animation.defaults.HospitalAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25
-Recreation,nl.tudelft.simulation.medlabs.location.animation.defaults.RecreationAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.2
-Park,nl.tudelft.simulation.medlabs.location.animation.defaults.ParkAnimation,FALSE,FALSE,FALSE,1,1,TRUE,0.1
-Satellite accommodation,eu.heros.location.animation.SatelliteAccommodationAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25
-Satellite workplace,eu.heros.location.animation.SatelliteWorkplaceAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25
+name,animationClass,reproducible,infectSub,infectTotal,contagiousRateFactor,infectionProbabilityFactor,capConstrained,capPersonsPerM2,sizeFactor
+Accommodation,nl.tudelft.simulation.medlabs.location.animation.defaults.HouseAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.25,1.0
+Workplace,nl.tudelft.simulation.medlabs.location.animation.defaults.WorkplaceAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+Retail,nl.tudelft.simulation.medlabs.location.animation.defaults.RetailAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25,1.0
+Mall,nl.tudelft.simulation.medlabs.location.animation.defaults.MallAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.1,7.4
+BarRestaurant,nl.tudelft.simulation.medlabs.location.animation.defaults.RestaurantAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.5,1.0
+FoodBeverage,nl.tudelft.simulation.medlabs.location.animation.defaults.FoodBeverageAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.5,1.3
+Supermarket,nl.tudelft.simulation.medlabs.location.animation.defaults.SupermarketAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.2,9.7
+Kindergarten,nl.tudelft.simulation.medlabs.location.animation.defaults.KindergartenAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+PrimarySchool,nl.tudelft.simulation.medlabs.location.animation.defaults.SchoolAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+SecondarySchool,nl.tudelft.simulation.medlabs.location.animation.defaults.SchoolAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+College,nl.tudelft.simulation.medlabs.location.animation.defaults.CollegeAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+University,nl.tudelft.simulation.medlabs.location.animation.defaults.UniversityAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+Religion,nl.tudelft.simulation.medlabs.location.animation.defaults.ReligionAnimation,TRUE,TRUE,FALSE,1,1,TRUE,0.5,1.0
+Police,nl.tudelft.simulation.medlabs.location.animation.defaults.PoliceAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+FireStation,nl.tudelft.simulation.medlabs.location.animation.defaults.FireStationAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
+Pharmacy,nl.tudelft.simulation.medlabs.location.animation.defaults.PharmacyAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.5,3.6
+Healthcare,nl.tudelft.simulation.medlabs.location.animation.defaults.MedServiceAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25,1.0
+Hospital,nl.tudelft.simulation.medlabs.location.animation.defaults.HospitalAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25,1.0
+Recreation,nl.tudelft.simulation.medlabs.location.animation.defaults.RecreationAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.2,1.9
+Park,nl.tudelft.simulation.medlabs.location.animation.defaults.ParkAnimation,FALSE,FALSE,FALSE,1,1,TRUE,0.1,1.0
+Satellite accommodation,eu.heros.location.animation.SatelliteAccommodationAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1.0
+Satellite workplace,eu.heros.location.animation.SatelliteWorkplaceAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1.0
