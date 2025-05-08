@@ -14,7 +14,9 @@ import nl.tudelft.simulation.dsol.SimRuntimeException;
 import nl.tudelft.simulation.dsol.animation.d2.RenderableScale;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameter;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterException;
+import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterLong;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterMap;
+import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterString;
 import nl.tudelft.simulation.dsol.model.inputparameters.reader.ReadInputParameters;
 import nl.tudelft.simulation.dsol.swing.gui.DsolPanel;
 import nl.tudelft.simulation.dsol.swing.gui.animation.DsolAnimationApplication;
@@ -79,7 +81,7 @@ public class HerosApplication extends DsolAnimationApplication
     {
         String propertyFilename = (args.length > 0) ? args[0] : "/default.properties";
         boolean interactive = (args.length < 2) || !args[1].toLowerCase().equals("batch");
-        // boolean interactive = false;
+        long seed = (args.length < 3) ? -1 : Long.valueOf(args[2]);
         HerosModel model;
         if (interactive)
         {
@@ -99,7 +101,19 @@ public class HerosApplication extends DsolAnimationApplication
             if (TabbedParameterDialog.process(model.getInputParameterMap()))
             {
                 double runLengthDays = (double) model.getParameterValueInt("generic.RunLength");
-                long seed = model.getParameterValueLong("generic.Seed");
+                if (seed == -1)
+                    seed = model.getParameterValueLong("generic.Seed");
+                else
+                {
+                    InputParameter<?, ?> ip = generic.get("OutputPath");
+                    generic.remove("OutputPath");
+                    generic.add(new InputParameterString("OutputPath", ip.getShortName(), ip.getDescription(),
+                            ip.getValue().toString() + "-seed-" + seed, ip.getDisplayPriority()));
+                    InputParameter<?, ?> sp = generic.get("Seed");
+                    generic.remove("Seed");
+                    generic.add(new InputParameterLong("Seed", sp.getShortName(), sp.getDescription(),
+                            seed, sp.getDisplayPriority()));
+                }
                 model.getSimulator().initialize(0.0, 0.0, runLengthDays * 24.0, model, seed);
                 Bounds2d mapBounds = /* model.getExtent(); */ new Bounds2d(4.202, 4.482, 52.011, 52.133);
                 // DsolAnimationGisTab gisTab =
@@ -140,7 +154,19 @@ public class HerosApplication extends DsolAnimationApplication
             else
                 model.getInputParameterMap().remove("covidT_area");
             double runLengthDays = (double) model.getParameterValueInt("generic.RunLength");
-            long seed = model.getParameterValueLong("generic.Seed");
+            if (seed == -1)
+                seed = model.getParameterValueLong("generic.Seed");
+            else
+            {
+                InputParameter<?, ?> ip = generic.get("OutputPath");
+                generic.remove("OutputPath");
+                generic.add(new InputParameterString("OutputPath", ip.getShortName(), ip.getDescription(),
+                        ip.getValue().toString() + "-seed-" + seed, ip.getDisplayPriority()));
+                InputParameter<?, ?> sp = generic.get("Seed");
+                generic.remove("Seed");
+                generic.add(new InputParameterLong("Seed", sp.getShortName(), sp.getDescription(),
+                        seed, sp.getDisplayPriority()));
+            }
             model.getSimulator().initialize(0.0, 0.0, runLengthDays * 24.0, model, seed);
             model.getSimulator().start();
         }
