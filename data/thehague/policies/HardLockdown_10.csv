@@ -1,0 +1,15 @@
+Time(d),LocationType,FractionOpen,FractionActivities,AlternativeLocation,ReportAsLocation
+10.0,Workplace,0.0,0.0,Accommodation,WorkToHome
+10.0,Retail,0.0,0.0,Accommodation,StayHome
+10.0,Mall,0.0,0.0,Accommodation,StayHome
+10.0,BarRestaurant,0.0,0.0,Accommodation,StayHome
+10.0,FoodBeverage,0.0,0.0,Accommodation,StayHome
+10.0,Kindergarten,0.0,0.0,Accommodation,KindergartenToHome
+10.0,PrimarySchool,0.0,0.0,Accommodation,PrimarySchoolToHome
+10.0,SecondarySchool,0.0,0.0,Accommodation,SecondarySchooToHome
+10.0,College,0.0,0.0,Accommodation,CollegeToHome
+10.0,University,0.0,0.0,Accommodation,UniversityToHome
+10.0,Religion,0.0,0.0,Accommodation,StayHome
+10.0,Recreation,0.0,0.0,Accommodation,StayHome
+10.0,Park,0.0,0.0,Accommodation,StayHome
+10.0,Satellite workplace,0.0,0.0,Accommodation,SatelliteWorkToHome

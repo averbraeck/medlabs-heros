@@ -1,0 +1,10 @@
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 111 > log/out-nac-111.log 2>log/err-nac-111.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 112 > log/out-nac-112.log 2>log/err-nac-112.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 113 > log/out-nac-113.log 2>log/err-nac-113.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 114 > log/out-nac-114.log 2>log/err-nac-114.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 115 > log/out-nac-115.log 2>log/err-nac-115.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 116 > log/out-nac-116.log 2>log/err-nac-116.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 117 > log/out-nac-117.log 2>log/err-nac-117.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 118 > log/out-nac-118.log 2>log/err-nac-118.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 119 > log/out-nac-119.log 2>log/err-nac-119.log &
+java -jar heros-maladaptation.jar ./flip-normal-area-cap.properties batch 120 > log/out-nac-120.log 2>log/err-nac-120.log &

@@ -1,0 +1,10 @@
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 211 > log/out-ndc-211.log 2>log/err-ndc-211.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 212 > log/out-ndc-212.log 2>log/err-ndc-212.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 213 > log/out-ndc-213.log 2>log/err-ndc-213.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 214 > log/out-ndc-214.log 2>log/err-ndc-214.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 215 > log/out-ndc-215.log 2>log/err-ndc-215.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 216 > log/out-ndc-216.log 2>log/err-ndc-216.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 217 > log/out-ndc-217.log 2>log/err-ndc-217.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 218 > log/out-ndc-218.log 2>log/err-ndc-218.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 219 > log/out-ndc-219.log 2>log/err-ndc-219.log &
+java -jar heros-maladaptation.jar ./flip-normal-dist-cap.properties batch 220 > log/out-ndc-220.log 2>log/err-ndc-220.log &
