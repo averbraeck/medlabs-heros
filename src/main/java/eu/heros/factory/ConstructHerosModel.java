@@ -1135,7 +1135,7 @@ public class ConstructHerosModel
         if (this.model.getParameterValueBoolean("generic.WriteOutput"))
         {
             String outputPath = this.model.getParameterValue("generic.OutputPath");
-            new ResultWriter(this.model, outputPath);
+            this.model.setResultWriter(new ResultWriter(this.model, outputPath));
         }
     }
 

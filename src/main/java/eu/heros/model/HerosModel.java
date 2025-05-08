@@ -1,14 +1,21 @@
 package eu.heros.model;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import org.djutils.draw.bounds.Bounds2d;
+import org.djutils.event.Event;
+import org.djutils.event.EventListener;
 import org.djutils.io.URLResource;
 
 import eu.heros.factory.ConstructHerosModel;
@@ -31,6 +38,7 @@ import nl.tudelft.simulation.dsol.SimRuntimeException;
 import nl.tudelft.simulation.dsol.animation.gis.GisRenderable2d;
 import nl.tudelft.simulation.dsol.animation.gis.osm.OsmFileCsvParser;
 import nl.tudelft.simulation.dsol.animation.gis.osm.OsmRenderable2d;
+import nl.tudelft.simulation.dsol.experiment.Replication;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterDouble;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterException;
 import nl.tudelft.simulation.dsol.model.inputparameters.InputParameterInteger;
@@ -57,7 +65,7 @@ import nl.tudelft.simulation.medlabs.simulation.SimpleDevsSimulatorInterface;
  * @author <a href="https://www.linkedin.com/in/mikhailsirenko">Mikhail Sirenko</a>
  * @author <a href="https://www.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class HerosModel extends AbstractMedlabsModel
+public class HerosModel extends AbstractMedlabsModel implements EventListener
 {
     /** */
     private static final long serialVersionUID = 20200919L;
@@ -78,10 +86,10 @@ public class HerosModel extends AbstractMedlabsModel
     private Map<Class<? extends Person>, String> personTypes = new HashMap<>();
 
     /** The file with nr of persons per location. */
-    private PrintWriter locationNrWriter;
+    private BufferedWriter locationNrWriter;
 
     /** The file with nr of persons per sublocation. */
-    private PrintWriter sublocationNrWriter;
+    private BufferedWriter sublocationNrWriter;
 
     /**
      * Construct the model.
@@ -92,7 +100,6 @@ public class HerosModel extends AbstractMedlabsModel
     {
         super(simulator, propertyFilename);
     }
-
 
     /** {@inheritDoc} */
     @Override
@@ -191,6 +198,16 @@ public class HerosModel extends AbstractMedlabsModel
         {
             getSimulator().scheduleEventNow(this, "hourTick", null);
         }
+
+        // subscribe to END_REPLICATION_EVENT for close of GZip files
+        try
+        {
+            this.simulator.addListener(this, Replication.END_REPLICATION_EVENT);
+        }
+        catch (RemoteException e)
+        {
+            throw new MedlabsRuntimeException(e);
+        }
     }
 
     /**
@@ -221,13 +238,28 @@ public class HerosModel extends AbstractMedlabsModel
         {
             String outputPath = getParameterValue("generic.OutputPath");
 
-            this.locationNrWriter = new PrintWriter(outputPath + "/locationNrPersons.csv");
-            this.locationNrWriter.print("\"Time(h)\",\"LocationNr\",\"NrPersons\"\n");
-            this.locationNrWriter.flush();
+            try
+            {
+                FileOutputStream fos1 = new FileOutputStream(new File(outputPath + "/locationNrPersons.csv.gz"));
+                BufferedOutputStream bos1 = new BufferedOutputStream(fos1, 128 * 1024);
+                GZIPOutputStream gos1 = new GZIPOutputStream(bos1);
+                OutputStreamWriter osw1 = new OutputStreamWriter(gos1, "UTF-8");
+                this.locationNrWriter = new BufferedWriter(osw1, 128 * 1024);
+                this.locationNrWriter.write("\"Time(h)\",\"LocationNr\",\"NrPersons\"\n");
+                this.locationNrWriter.flush();
 
-            this.sublocationNrWriter = new PrintWriter(outputPath + "/sublocationNrPersons.csv");
-            this.sublocationNrWriter.print("\"Time(h)\",\"LocationNr\",\"SubLocationNr\",\"NrPersons\"\n");
-            this.sublocationNrWriter.flush();
+                FileOutputStream fos2 = new FileOutputStream(new File(outputPath + "/sublocationNrPersons.csv.gz"));
+                BufferedOutputStream bos2 = new BufferedOutputStream(fos2, 128 * 1024);
+                GZIPOutputStream gos2 = new GZIPOutputStream(bos2);
+                OutputStreamWriter osw2 = new OutputStreamWriter(gos2, "UTF-8");
+                this.sublocationNrWriter = new BufferedWriter(osw2, 128 * 1024);
+                this.sublocationNrWriter.write("\"Time(h)\",\"LocationNr\",\"SubLocationNr\",\"NrPersons\"\n");
+                this.sublocationNrWriter.flush();
+            }
+            catch (IOException ioe)
+            {
+                throw new MedlabsRuntimeException(ioe);
+            }
 
             locationDump();
         }
@@ -236,24 +268,33 @@ public class HerosModel extends AbstractMedlabsModel
     protected void locationDump()
     {
         double time = getSimulator().getSimulatorTime();
-        for (LocationType locationType : this.locationTypeList)
+        try
         {
-            for (Location location : locationType.getLocationMap().valueCollection())
+            for (LocationType locationType : this.locationTypeList)
             {
-                if (location.getId() >= 0)
+                for (Location location : locationType.getLocationMap().valueCollection())
                 {
-                    this.locationNrWriter.print(time + "," + location.getId() + "," + location.getAllPersonIds().size() + "\n");
-                    for (int subLocationIndex = 1; subLocationIndex < location.getNumberOfSubLocations(); subLocationIndex++)
+                    if (location.getId() >= 0)
                     {
-                        int nrSub = this.diseaseTransmission.getNrPersonsInSublocation(location, (short) subLocationIndex);
-                        this.sublocationNrWriter
-                                .print(time + "," + location.getId() + "," + subLocationIndex + "," + nrSub + "\n");
+                        this.locationNrWriter
+                                .write(time + "," + location.getId() + "," + location.getAllPersonIds().size() + "\n");
+                        for (int subLocationIndex = 1; subLocationIndex < location
+                                .getNumberOfSubLocations(); subLocationIndex++)
+                        {
+                            int nrSub = this.diseaseTransmission.getNrPersonsInSublocation(location, (short) subLocationIndex);
+                            this.sublocationNrWriter
+                                    .write(time + "," + location.getId() + "," + subLocationIndex + "," + nrSub + "\n");
+                        }
                     }
                 }
             }
+            this.locationNrWriter.flush();
+            this.sublocationNrWriter.flush();
         }
-        this.locationNrWriter.flush();
-        this.sublocationNrWriter.flush();
+        catch (IOException ioe)
+        {
+            throw new MedlabsRuntimeException(ioe);
+        }
         getSimulator().scheduleEventRel(1.0, this, "locationDump", null);
     }
 
@@ -265,7 +306,7 @@ public class HerosModel extends AbstractMedlabsModel
         // XXX: hack -- this is not how we should do this...
         this.properties = new Properties(IdxPerson.class, getPersonMap().size());
     }
-    
+
     /**
      * Make the person types for the week pattern names.
      */
@@ -297,8 +338,8 @@ public class HerosModel extends AbstractMedlabsModel
             if (person.getDiseasePhase().isDead())
                 continue;
             String oldWeekPatternName = person.getCurrentWeekPattern().getName();
-            String newWeekPatternName = "0_" + person.getDiseasePhase().getName() + "_"
-                    + this.personTypes.get(person.getClass());
+            String newWeekPatternName =
+                    "0_" + person.getDiseasePhase().getName() + "_" + this.personTypes.get(person.getClass());
             if (!getWeekPatternMap().containsKey(newWeekPatternName))
             {
                 System.err.println("checkChangeWeekPattern - New week pattern " + newWeekPatternName + " not found");
@@ -483,6 +524,34 @@ public class HerosModel extends AbstractMedlabsModel
     public void setBasePath(final String basePath)
     {
         this.basePath = basePath;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void notify(final Event event) throws RemoteException
+    {
+        if (event.getType().equals(Replication.END_REPLICATION_EVENT))
+        {
+            getResultWriter().closeFiles();
+
+            try
+            {
+                this.locationNrWriter.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            try
+            {
+                this.sublocationNrWriter.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
