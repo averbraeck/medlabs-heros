@@ -14,4 +14,4 @@ Several input files are used to configure a medlabs-heros experiment. Each of th
 - 3.8. [OSM configuration file](3-8-input-osm-config.md). In the example configuration: `locations/thehague.osm.csv`.
 - 3.9. [OSM map file](3-9-input-osm-map.md). In the example configuration: `locations/thehague.osm.pbf`.
 
-Neither the folder locations, nor the folder names or file names have any limitations for naming. Do, however, stick to the file formats (.csv, .csv.gz, .pbf, .xlsx) since the program counts on receiving files of a certain type. If possible, use the proper extensions for the files, since it can be very confusing if the externsions do not match the file content.
+Neither the folder locations, nor the folder names or file names have any limitations for naming. Do, however, stick to the file formats (.csv, .csv.gz, .pbf, .xlsx) since the program counts on receiving files of a certain type. If possible, use the proper extensions for the files, since it can be very confusing if the extensions do not match the file content.
