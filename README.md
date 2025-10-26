@@ -76,7 +76,7 @@ java -jar medlabs-heros-full-2.1.4.jar
 
 It will find the file `default.properties` and read the information to find all other files needed to run the experiment. It will show a confirmation screen of the configuration in `default.properties`:
 
-[](docs/images/open-screen.png)
+![](docs/images/open-screen.png)
 
 Final tweaks can be made here, after which the model runs, either in batch mode or in interactive mode.
 
