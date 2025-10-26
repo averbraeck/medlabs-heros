@@ -1,8 +1,8 @@
 # medlabs-heros
 
-## Configuration files
+## 2. Configuration files
 
-### 1. Main properties file
+### 2.1. Main properties file
 
 The main properties file looks, e.g., as follows:
 
@@ -77,3 +77,19 @@ The following parameters are key:
 - All other parameters are explained in the comments above the parameter.
 - The input files for people, locations, activities, etc. are discussed in the [input files](input.md) document.
 
+
+### 2.2. Use of the main properties file
+
+Multiple instances of a main properties file can exist, and these files can be in multiple directories. Typically, they are placed in the same directory as the jar file that is run to execute the model. When two files, `lockdown.properties` and `normal.properties` exist, each with their own parameters and files on which they are dependent, they can be run with:
+
+```
+java -jar medlabs-heros-full-2.1.4.jar /normal.properties
+```
+
+or
+
+```
+java -jar medlabs-heros-full-2.1.4.jar /lockdown.properties
+```
+
+Without the `batch` argument, both of the above runs of the application would be in interactive mode.
