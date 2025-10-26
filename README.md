@@ -27,3 +27,56 @@ Using Maven, all libraries are resolved automatically for the HERoS project libr
 #### Java version
 
 HERoS and the libraries on which it is dependent, use a Java version 17 or higher. The library is typically used with an openjdk version 17.
+
+
+#### Instructions for interactive run
+
+1. Make sure a Java version 17.0 or higher is installed on the computer, and can be reached from the command line / shell. Test with `java -version`:
+
+```
+java -version
+openjdk version "17.0.2" 2022-01-18
+OpenJDK Runtime Environment (build 17.0.2+8-86)
+OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
+```
+
+When the version is 17 or higher, Java can run the heros model.
+
+
+2. Download the contents of the `jar` folder and unpack into a folder on disk, preferaby one without spaces in the file path. It should have the following content:
+
+```
+|-- medlabs-heros-full-2.1.4.jar
+|-- default.properties
+|-- alpha-distance.properties
+|-- data
+    |-- thehague
+        |-- activities
+            |-- activityschedule.xlsx
+        |-- epidemiology
+            |-- infection_rates.csv
+            |-- transition_probabilities.xlsx
+        |-- locations
+            |-- locationtypes.csv
+            |-- locations.csv.gz
+            |-- thehague.osm.csv [description of files used in animation]
+            |-- thehague.osm.pbf [example openstreetmap file for background]
+            |-- haaglanden.osm.pbf [example OSM file of a wider region]
+        |-- people
+            |-- people.csv.gz
+        |-- policies
+            |-- HardLockdown_00.csv [could be many policies]
+```
+
+3. Go into the folder of the jar file, and run it with:
+
+```
+java -jar medlabs-heros-full-2.1.4.jar
+```
+
+It will find the file `default.properties` and read the information to find all other files needed to run the experiment. It will show a confirmation screen of the configuration in `default.properties`:
+
+[](docs/images/open-screen.png)
+
+Final tweaks can be made here, after which the model runs, either in batch mode or in interactive mode.
+
