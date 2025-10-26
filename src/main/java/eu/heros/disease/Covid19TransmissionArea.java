@@ -228,7 +228,7 @@ public class Covid19TransmissionArea extends DiseaseTransmission
                 return infectionRecord;
 
             // calculate the probability for all persons present
-            double pInfection = 1.0 - Math.exp(factor * sumTij);
+            double pInfection = 1.0 - Math.exp(-factor * sumTij);
 
             // check if we infect others
             for (TIntIterator it = location.getAllPersonIds().iterator(); it.hasNext();)
