@@ -1,6 +1,6 @@
 # medlabs-heros
 
-## Literature
+## 6. Literature
 
 The models are based on the PhD thesis work of Mingxin Zhang at TU Delft, which has been described in detail in the following literature references:
 

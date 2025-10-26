@@ -1,8 +1,8 @@
 # medlabs-heros
 
-## Installing and running a medlabs-heros study
+## 1. Installing and running a medlabs-heros study
 
-### 1. Install Java
+### 1.1. Install Java
 
 Make sure a Java version 17.0 or higher is installed on the computer, and can be reached from the command line / shell. Test with `java -version`:
 
@@ -16,7 +16,7 @@ OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
 When the version is 17 or higher, Java can run the heros model.
 
 
-### 2. Download the executable jar, and input files
+### 1.2. Download the executable jar, and input files
 
 Download the contents of the `jar` folder and unpack into a folder on disk, preferaby one without spaces in the file path. It should have the following content:
 
@@ -44,7 +44,7 @@ Download the contents of the `jar` folder and unpack into a folder on disk, pref
 ```
 
 
-### 3. Run the model interactively
+### 1.3. Run the model interactively
 
 Go into the folder of the jar file, and run it with:
 
@@ -59,7 +59,7 @@ It will find the file `default.properties` and read the information to find all 
 Final tweaks can be made here, after which the model runs in interactive mode.
 
 
-### 4. Command line arguments
+### 1.4. Command line arguments
 
 The running of the jar file takes three arguments:
 
@@ -67,15 +67,15 @@ The running of the jar file takes three arguments:
 java -jar medlabs-heros-full-2.1.4.jar properties_file [batch|interactive] seed
 ```
 
-The properties file name defaults to `/default.properties` where the `/` means that the properties file is searched for at the same place where the jar file resides. See the location of `default.properties` in the folder structure at item 2 above.
+The properties file name defaults to `/default.properties` where the `/` means that the properties file is searched for at the same place where the jar file resides. See the location of `default.properties` in the folder structure at section 1.2 above.
 
-The second argument is `interactive` or `batch`, and defaults to `interactive`. When `batch` is chosen, the model runs without animation and without user input during the run. The batch run is explained below at item 5.
+The second argument is `interactive` or `batch`, and defaults to `interactive`. When `batch` is chosen, the model runs without animation and without user input during the run. The batch run is explained below in section 1.5.
 
 The third argument is the seed to use for the random number generators. In case of multiple runs that have to be stochastically different, a seed can be chosen on the command line. This overrides the seed in the properties file.
 
 
 
-### 5. Batch run
+### 1.5. Batch run
 
 It is possible to run an experiment without animation (which will also run a lot faster than the interactive model). When a model starts in batch mode, no animation or user input is requested. The `OutputPath` where all model output is placed, is appended with `-seed-###` where `###` is the seed value. In this way, many replications can be started in parallel by, e.g., calling (in Linux):
 

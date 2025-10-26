@@ -1,6 +1,8 @@
 # medlabs-heros
 
-## medlabs-heros code
+## 5. medlabs-heros code
+
+### 5.1. Generic setup of the code
 
 The build-up of the libraries is as follows:
 
@@ -13,8 +15,16 @@ The build-up of the libraries is as follows:
   <tr><td>djutils-base (https://github.com/averbraeck/djutils-base / https://djutils.org)</td></tr>
 </table>
 
+
+### 5.2. Maven usage
+
 Using Maven, all libraries are resolved automatically for the HERoS project library. There is an 'executable jar' in the folder `jar` that contains the heros library plus all libraries on which it is dependent, as well as a set of input files for The Hague to run the model on 490,000 citizens.
 
 
+### 5.3. Java version
+
 HERoS and the libraries on which it is dependent, use a Java version 17 or higher. The library is typically used with an openjdk version 17.
+
+
+### 5.4. IDE
 
