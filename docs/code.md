@@ -14,3 +14,7 @@ The build-up of the libraries is as follows:
 </table>
 
 Using Maven, all libraries are resolved automatically for the HERoS project library. There is an 'executable jar' in the folder `jar` that contains the heros library plus all libraries on which it is dependent, as well as a set of input files for The Hague to run the model on 490,000 citizens.
+
+
+HERoS and the libraries on which it is dependent, use a Java version 17 or higher. The library is typically used with an openjdk version 17.
+
