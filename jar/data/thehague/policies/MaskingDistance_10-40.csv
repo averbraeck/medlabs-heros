@@ -1,0 +1,5 @@
+Time(d),Parameter,Value
+10,covidT_dist.psi,2.0
+10,covidT_dist.mu,0.6
+40,covidT_dist.psi,1.0
+40,covidT_dist.mu,0.0

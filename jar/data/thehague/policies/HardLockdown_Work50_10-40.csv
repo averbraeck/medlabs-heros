@@ -1,0 +1,27 @@
+Time(d),LocationType,FractionOpen,FractionActivities,AlternativeLocation,ReportAsLocation
+10.0,Workplace,0.8,0.6,Accommodation,WorkToHome
+10.0,Retail,0.1,0.1,Accommodation,StayHome
+10.0,Mall,0,0,Accommodation,StayHome
+10.0,BarRestaurant,0,0,Accommodation,StayHome
+10.0,FoodBeverage,0,0,Accommodation,StayHome
+10.0,Kindergarten,0,0,Accommodation,KindergartenToHome
+10.0,PrimarySchool,0,0,Accommodation,PrimarySchoolToHome
+10.0,SecondarySchool,0,0,Accommodation,SecondarySchooToHome
+10.0,College,0,0,Accommodation,CollegeToHome
+10.0,University,0,0,Accommodation,UniversityToHome
+10.0,Recreation,0,0,Accommodation,StayHome
+10.0,Park,0,0,Accommodation,StayHome
+10.0,Satellite workplace,0.2,0.5,Accommodation,SatelliteWorkToHome
+40.0,Workplace,1,1,Workplace,Workplace
+40.0,Retail,1,1,Retail,Retail
+40.0,Mall,1,1,Mall,Mall
+40.0,BarRestaurant,1,1,BarRestaurant,BarRestaurant
+40.0,FoodBeverage,1,1,FoodBeverage,FoodBeverage
+40.0,Kindergarten,1,1,Kindergarten,Kindergarten
+40.0,PrimarySchool,1,1,PrimarySchool,PrimarySchool
+40.0,SecondarySchool,1,1,SecondarySchool,SecondarySchool
+40.0,College,1,1,College,College
+40.0,University,1,1,University,University
+40.0,Recreation,1,1,Recreation,Recreation
+40.0,Park,1,1,Park,Park
+40.0,Satellite workplace,1,1,Satellite workplace,Satellite workplace

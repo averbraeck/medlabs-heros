@@ -1,0 +1,5 @@
+Time(d),LocationType,FractionOpen,FractionActivities,AlternativeLocation,ReportAsLocation
+10.0,Workplace,0.0,0.0,Accommodation,WorkToHome
+10.0,Satellite workplace,0.0,0.0,Accommodation,SatelliteWorkToHome
+40.0,Workplace,1.0,1.0,Workplace,Workplace
+40.0,Satellite workplace,1.0,1.0,Satellite workplace,Satellite workplace
