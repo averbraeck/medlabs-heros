@@ -10,7 +10,7 @@ Several input files are used to configure a medlabs-heros experiment. Each of th
 - 3.4. [People](3-4-input-people.md). In the example configuration: `people/people.csv.gz`.
 - 3.5. [Location types](3-5-input-location-types.md). In the example configuration: `locations/locationtypes.csv`.
 - 3.6. [Locations](3-6-input-locations.md). In the example configuration: `locations/locations.csv.gz`.
-- 3.7. [Policies](3-7-input-policies.md). Not turned on in the example configuration. Several examples available under folder `policcies`.
+- 3.7. [Policies](3-7-input-policies.md). Not turned on in the example configuration. Several examples available under folder `policies`.
 - 3.8. [OSM configuration file](3-8-input-osm-config.md). In the example configuration: `locations/thehague.osm.csv`.
 - 3.9. [OSM map file](3-9-input-osm-map.md). In the example configuration: `locations/thehague.osm.pbf`.
 
