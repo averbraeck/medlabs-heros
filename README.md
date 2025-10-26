@@ -52,18 +52,18 @@ When the version is 17 or higher, Java can run the heros model.
 |-- data
     |-- thehague
         |-- activities
-            |-- activityschedule.xlsx
+        |   |-- activityschedule.xlsx
         |-- epidemiology
-            |-- infection_rates.csv
-            |-- transition_probabilities.xlsx
+        |   |-- infection_rates.csv
+        |   |-- transition_probabilities.xlsx
         |-- locations
-            |-- locationtypes.csv
-            |-- locations.csv.gz
-            |-- thehague.osm.csv [description of files used in animation]
-            |-- thehague.osm.pbf [example openstreetmap file for background]
-            |-- haaglanden.osm.pbf [example OSM file of a wider region]
+        |   |-- locationtypes.csv
+        |   |-- locations.csv.gz
+        |   |-- thehague.osm.csv [description of files used in animation]
+        |   |-- thehague.osm.pbf [example openstreetmap file for background]
+        |   |-- haaglanden.osm.pbf [example OSM file of a wider region]
         |-- people
-            |-- people.csv.gz
+        |   |-- people.csv.gz
         |-- policies
             |-- HardLockdown_00.csv [could be many policies]
 ```
