@@ -75,7 +75,7 @@ The following parameters are key:
 - `generic.diseasePropertiesModel` can take two values: `distance` or `area`. This chooses one of two available disease transmission models, where one is based on the number of persons in an area, and the other is based on average distance between an infectious and a susceptible person. 
 - `generic.PersonDumpIntervalDays` does not dump all persons in the model (490,000 for the The Hague model) with all their properties. When the interval is set at a N days, all persons in the model dump their state to a file every N days. This csv file can grow very large, therefore the default value is 0.
 - All other parameters are explained in the comments above the parameter.
-- The input files for people, locations, activities, etc. are discussed in the [input files](input.md) document.
+- The input files for people, locations, activities, etc. are discussed in the [input files](3-input.md) document.
 
 
 ### 2.2. Use of the main properties file
