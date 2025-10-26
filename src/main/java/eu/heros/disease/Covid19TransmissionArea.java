@@ -202,7 +202,7 @@ public class Covid19TransmissionArea extends DiseaseTransmission
             // TRY TO AVOID CALLING THIS -- IT IS EXPENSIVE
 
             // calculate (beta . p_B . t_i,j) / (sigma_T . A_K)
-            double factor = this.beta * this.contagiousness * duration / (lt.getCorrectionFactorArea() * area);
+            double factor = -this.beta * this.contagiousness * duration / (lt.getCorrectionFactorArea() * area);
             if (factor == 0.0)
                 return infectionRecord;
 
@@ -228,7 +228,7 @@ public class Covid19TransmissionArea extends DiseaseTransmission
                 return infectionRecord;
 
             // calculate the probability for all persons present
-            double pInfection = 1.0 - Math.exp(-factor * sumTij);
+            double pInfection = 1.0 - Math.exp(factor * sumTij);
 
             // check if we infect others
             for (TIntIterator it = location.getAllPersonIds().iterator(); it.hasNext();)
