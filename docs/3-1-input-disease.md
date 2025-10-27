@@ -93,32 +93,30 @@ transport and shops might suffer since many people arrive and depart with short 
 The formula to compute whether infectious persons $j = 1 \dots N_K$ infect another person $i$ in location $K$ is:
 
 $$
-p_i
-= 1 - \exp\!\left(
-  - \sum_{j=1}^{M_k}
+p_i = 1 - \exp\!\left(- \sum_{j=1}^{M_k}
   (1-\mu)^2 \cdot P_j(d) \cdot t_{i,j}
   \cdot \sigma\big(\max(\Delta(A_k, N_k), \psi)\big)
   \cdot \alpha
-\right)
+  \right)
 $$
 
 where:
 
-- $k$ — the (sub)location index  
-- $i$ — the index of a susceptible person in (sub)location $k$  
-- $j$ — the index of an infectious person in (sub)location $k$  
-- $M_k$ — the number of infectious persons in (sub)location $k$  
-- $N_k$ — the number of persons in (sub)location $K$ which is of location type $T$  
-- $P_j(d)$ — the infectiousness of person $j$ for the number of days $d$ since the exposure date of person $j$;  
+- $k$ is the (sub)location index  
+- $i$ is the index of a susceptible person in (sub)location $k$  
+- $j$ is the index of an infectious person in (sub)location $k$  
+- $M_k$ is the number of infectious persons in (sub)location $k$  
+- $N_k$ is the number of persons in (sub)location $K$ which is of location type $T$  
+- $P_j(d)$ is the infectiousness of person $j$ for the number of days $d$ since the exposure date of person $j$;  
   for example, infectiousness can be 0 for the first 3 days, then climb to 7 in 4 days, and then decrease to 0  
   in about a week  
-- $\mu$ — the masking factor, between 0 (no masks) and 1 (fully protected)  
-- $t_{i,j}$ — the time that contagious person $j$ and susceptible person $i$ have spent together in location $K$ (in hours)  
-- $\sigma$ — the function that translates average distance to transmission probability  
-- $\Delta$ — the function that transforms area $A_k$ to average distance  
-- $A_k$ — the area of (sub)location $k$  
-- $\psi$ — the social distancing factor (minimum distance people keep)  
-- $\alpha$ — a calibration factor
+- $\mu$ is the masking factor, between 0 (no masks) and 1 (fully protected)  
+- $t_{i,j}$ is the time that contagious person $j$ and susceptible person $i$ have spent together in location $K$ (in hours)  
+- $\sigma$ is the function that translates average distance to transmission probability  
+- $\Delta$ is the function that transforms area $A_k$ to average distance  
+- $A_k$ is the area of (sub)location $k$  
+- $\psi$ is the social distancing factor (minimum distance people keep)  
+- $\alpha$ is a calibration factor
 
 
 
