@@ -363,3 +363,66 @@ This is a huge file (can become GB size) that gives detailed information about e
 
 ### 4.16. locationTypeNrs.csv
 
+The file `locationTypeNrs.csv` lists per half hour how many people are in one of the Location Types at that point in time. The locations include transport such as walking, biking or driving a car.
+
+```
+"Time(h)","walk","bike","car","Accommodation","Workplace","Retail","Mall","BarRestaurant",
+    "FoodBeverage","Supermarket","Kindergarten","PrimarySchool","SecondarySchool",
+    "College","University","Religion","Police","FireStation","Pharmacy","Healthcare",
+    "Hospital","Recreation","Park","Satellite accommodation","Satellite workplace"
+6.0,0,0,0,553667,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+6.5,9853,73767,27366,388268,44431,1769,7,1460,442,188,629,2197,1361,243,269,26,472,5,56,231,407,220,0,0,0
+7.0,6064,37592,7548,203993,242402,9294,34,7532,2290,998,3760,12819,7775,1798,1915,164,2631,33,307,1268,2323,1127,0,0,0
+7.5,6202,11025,749,156513,277965,10525,40,8575,2611,1130,8751,31575,19167,4656,5256,184,3017,35,350,1437,2642,1262,0,0,0
+8.0,1258,2474,170,127932,277965,10525,40,8575,2611,1130,13998,50271,30650,7996,9145,184,3017,35,350,1437,2642,1262,0,0,0
+```
+
+
+### 4.17. offspringLocation.csv
+
+This file lists how many people were infected by an infectious person who was at a location. The number is listed when the infectious person leaves the location. Often, the offspring is zero, either because there were no or few susceptible persons at the location, or because the average distance to others was small.
+
+```
+"Time(h)","infectiousPersonId","infectiousPersonType","infectiousPersonAge",
+    "infectiousPersonGender","infectiousPersonDiseasePhase","locationId","subLocationIndex",
+    "locationType","nrPersonsInfected"
+688.3433486434537,377535,"Worker",52,"F","Infected-Asymptomatic",58609,4,"Accommodation",0
+688.3498692522085,146600,"WeekendWorker",55,"M","Infected-Asymptomatic",76307,0,"Accommodation",0
+688.3602487101134,202745,"Worker",57,"M","Infected-Asymptomatic",141760,0,"Supermarket",1
+688.3831356163217,177924,"EssentialWorker",56,"M","Infected-Asymptomatic",63880,3,"Accommodation",0
+688.3930877479053,382477,"Worker",41,"M","Infected-Asymptomatic",58171,5,"Accommodation",0
+688.3948728303882,19394,"Worker",54,"F","Infected-Asymptomatic",25643,1,"Accommodation",0
+688.4083222286242,179164,"Worker",22,"F","Infected-Asymptomatic",142623,0,"Pharmacy",0
+688.4563583246496,410278,"Worker",60,"M","Infected-Asymptomatic",79273,2,"Accommodation",0
+688.4614358272958,545682,"Worker",56,"M","Infected-Asymptomatic",142932,0,"Supermarket",0
+688.4728494393116,488293,"WeekendWorker",40,"F","Infected-Asymptomatic",53689,1,"Accommodation",0
+688.4797851413604,521655,"EssentialWorker",35,"M","Exposed",32665,0,"Accommodation",0
+688.5009560535993,44159,"EssentialWorker",21,"M","Infected-Asymptomatic",139597,0,"Supermarket",2
+```
+
+The headings clearly list that most properties, except the number of infected persons, are those of the infectious person. This helps to see not only *where* infections take place, but also by what type of person. Is it, e.g., often someone asymptomatically infectious who *works* at a supermarket or shop? This can give some deeper insights into the effects of the social fabric on infections.
+
+
+### 4.18. sublocationNrPersons.csv
+
+This is a huge file (can become multiple GBs in terms of size) that gives detailed information about each and every location plus sublocation (classroom, office at a workplace, classroom in a school, etc.) with the number of persons in that sublocation, reported every hour.
+
+```
+"Time(h)","LocationNr","SubLocationNr","NrPersons"
+0.0,84347,1,1
+0.0,84347,2,1
+0.0,84347,3,1
+0.0,84347,4,1
+0.0,84347,5,1
+0.0,84347,6,1
+0.0,84347,7,1
+0.0,84347,8,1
+0.0,84347,9,1
+```
+
+The sublocation nr is the 'room number' within the location when it has been divided into smaller units.
+
+
+### 4.19. totActivityTimes.csv
+
+
