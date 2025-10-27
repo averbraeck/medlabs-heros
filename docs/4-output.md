@@ -120,7 +120,7 @@ Note that the *infected* person numbers are in the rows.
 
 
 
-### 4.5. dayInPersonType.csv
+### 4.5. dayInfPersonType.csv
 
 How many persons of type X were infected per day?
 
@@ -424,5 +424,98 @@ The sublocation nr is the 'room number' within the location when it has been div
 
 
 ### 4.19. totActivityTimes.csv
+
+This file stores every day the *cumulative* number of hours each type of person has spent in each type of location:
+
+```
+"Time(h)","activityType","personType","hours"
+792.001,"Hospital","TOTAL",711389.5347652435
+792.001,"Hospital","Worker",26775.538964748383
+792.001,"Hospital","PrimarySchoolStudent",1368.0
+792.001,"Hospital","WeekendWorker",313602.87340927124
+792.001,"Hospital","SecondarySchoolStudent",480.0
+792.001,"Hospital","CollegeStudent",336.0
+792.001,"Hospital","EssentialWorker",357331.1223912239
+792.001,"Hospital","KindergartenStudent",120.0
+792.001,"Hospital","UniversityStudent",240.0
+792.001,"Hospital","Pensioner",8832.0
+792.001,"Hospital","Unemployed",2208.0
+792.001,"Hospital","Infant",96.0
+```
+
+
+### 4.20. totInfLocPersonTypeToPersonType.csv
+
+This file stores the *cumulative* number of persons of type X that were infected by persons of type Y, including in which location.
+
+```
+"time","location_type","infecting_person_type","Infant","KindergartenStudent",
+    "PrimarySchoolStudent","SecondarySchoolStudent","CollegeStudent","UniversityStudent",
+    "Worker","Pensioner","Unemployed","WeekendWorker","EssentialWorker",
+    "WorkerSatelliteToCity","WorkerCityToSatellite","WorkerSatelliteToSatellite",
+    "WorkerCountryToCity"
+528,"Supermarket","Infant",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+528,"Supermarket","KindergartenStudent",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+528,"Supermarket","PrimarySchoolStudent",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+528,"Supermarket","SecondarySchoolStudent",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+528,"Supermarket","CollegeStudent",0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
+528,"Supermarket","UniversityStudent",0,0,0,0,0,0,11,0,0,1,0,0,0,0,0
+528,"Supermarket","Worker",0,0,0,0,3,7,488,31,29,18,3,0,0,0,0
+528,"Supermarket","Pensioner",0,0,0,0,0,0,12,12,1,1,1,0,0,0,0
+528,"Supermarket","Unemployed",0,0,0,0,0,0,17,0,1,0,0,0,0,0,0
+528,"Supermarket","WeekendWorker",0,0,0,0,0,1,34,3,1,4,1,0,0,0,0
+528,"Supermarket","EssentialWorker",0,0,0,0,0,1,19,7,1,4,2,0,0,0,0
+```
+
+Note that the cumulative number of *infected* person types are in the rows. The *infecting* person types are in the columns.
+
+
+
+### 4.21. totInfPersonType.csv
+
+What is the *cumulative* number of persons of type X who were infected up to this day (expressed as a number of hours)?
+
+```
+"time","Infant","KindergartenStudent","PrimarySchoolStudent","SecondarySchoolStudent",
+    "CollegeStudent","UniversityStudent","Worker","Pensioner","Unemployed",
+    "WeekendWorker","EssentialWorker","WorkerSatelliteToCity",
+    "WorkerCityToSatellite","WorkerSatelliteToSatellite","WorkerCountryToCity"
+24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+48,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+72,1,0,15,5,0,2,39,1,0,3,1,0,0,0,0
+96,3,0,38,15,1,5,97,10,0,4,1,0,0,0,0
+120,4,1,57,22,1,5,130,13,3,4,1,0,0,0,0
+144,5,2,63,27,3,6,192,27,12,5,2,0,0,0,0
+168,5,3,74,33,4,6,227,29,15,10,3,0,0,0,0
+192,6,7,174,57,4,11,366,36,20,16,6,0,0,0,0
+216,8,23,260,85,9,21,514,47,24,20,11,0,0,0,0
+240,8,46,350,108,12,26,664,55,26,27,16,0,0,0,0
+```
+
+
+### 4.22. totInfPersonTypeToPersonType.csv
+
+What is the *cumulative* number of persons of type X who were infected by persons of type Y, over all locations?
+
+```
+"time","infecting_person_type","Infant","KindergartenStudent",
+    "PrimarySchoolStudent","SecondarySchoolStudent","CollegeStudent","UniversityStudent",
+    "Worker","Pensioner","Unemployed","WeekendWorker","EssentialWorker",
+    "WorkerSatelliteToCity","WorkerCityToSatellite","WorkerSatelliteToSatellite",
+    "WorkerCountryToCity"
+480,"Infant",4,2,0,1,0,1,8,0,2,1,0,0,0,0,0
+480,"KindergartenStudent",13,55,0,0,0,1,45,0,3,1,0,0,0,0,0
+480,"PrimarySchoolStudent",3,1,470,27,2,3,234,4,20,11,3,0,0,0,0
+480,"SecondarySchoolStudent",0,2,20,112,2,3,87,2,4,2,2,0,0,0,0
+480,"CollegeStudent",0,0,0,1,4,1,14,3,1,0,0,0,0,0,0
+480,"UniversityStudent",0,1,5,3,2,11,36,2,2,1,0,0,0,0,0
+480,"Worker",27,32,114,90,28,27,1400,56,74,55,15,0,0,0,0
+480,"Pensioner",0,0,0,1,1,0,34,61,2,3,2,0,0,0,0
+480,"Unemployed",8,1,6,4,0,0,34,1,4,3,1,0,0,0,0
+480,"WeekendWorker",3,4,8,7,1,2,51,5,3,29,11,0,0,0,0
+480,"EssentialWorker",1,0,1,1,0,1,31,4,0,21,23,0,0,0,0
+```
+
+Note that the cumulative number of *infected* person types are in the rows. The *infecting* person types are in the columns.
 
 
