@@ -25,8 +25,8 @@ Since $\beta$, $p_B$, $t_{i,j}$, $\sigma_T$, and $A_K$ are constant in one calcu
 
 $$
 p_i^{\text{infected}} = 1 - e^{-
-\frac{\beta \, p_B \, t_{i,j}}
-{\sigma_T \, A_K}
+\frac{\beta \cdot p_B \cdot t_{i,j}}
+{\sigma_T \cdot A_K}
 \sum_{j=1}^{N_K} p_j(t_e)}
 $$
 
@@ -93,19 +93,13 @@ transport and shops might suffer since many people arrive and depart with short 
 The formula to compute whether infectious persons $j = 1 \dots N_K$ infect another person $i$ in location $K$ is:
 
 $$
-p_i = 1 - \exp \left[
-  \sum_{j=1}^{M_k}
-  \left(
-    - (1 - \mu)^2 \;
-    P_j(d) \;
-    t_{i,j} \;
-    \sigma\!\big(
-      \max(\Delta(A_k, N_k), \psi)
-    \big)
-    \;
-    \alpha
-  \right)
-\right]
+p_i
+= 1 - \exp\!\left(
+  - \sum_{j=1}^{M_k}
+  (1-\mu)^2 \cdot P_j(d) \cdot t_{i,j}
+  \cdot \sigma\big(\max(\Delta(A_k, N_k), \psi)\big)
+  \cdot \alpha
+\right)
 $$
 
 where:
