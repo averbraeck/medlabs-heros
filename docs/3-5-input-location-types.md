@@ -7,7 +7,8 @@ Since there are often over 200,000 locations in a typical simulation (every home
 Below is an example of a LocationType csv-file:
 
 ```
-name,animationClass,reproducible,infectSub,infectTotal,contagiousRateFactor,infectionProbabilityFactor,capConstrained,capPersonsPerM2,sizeFactor
+name,animationClass,reproducible,infectSub,infectTotal,contagiousRateFactor,
+    infectionProbabilityFactor,capConstrained,capPersonsPerM2,sizeFactor
 Accommodation,HouseAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.25,1.0
 Workplace,WorkplaceAnimation,TRUE,TRUE,FALSE,1,1,FALSE,0.5,1.0
 Retail,RetailAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25,1.0
@@ -28,8 +29,8 @@ Healthcare,MedServiceAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25,1.0
 Hospital,HospitalAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.25,1.0
 Recreation,RecreationAnimation,FALSE,TRUE,FALSE,1,1,TRUE,0.2,1.9
 Park,ParkAnimation,FALSE,FALSE,FALSE,1,1,TRUE,0.1,1.0
-Satellite accommodation,SatelliteAccommodationAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1.0
-Satellite workplace,SatelliteWorkplaceAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1.0
+Satellite accommodation,SatelliteAccAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1.0
+Satellite workplace,SatelliteWorkAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1.0
 ```
 
 The file was a bit shortened for readability; for the `animationClass`, typically the full path is given: `nl.tudelft.simulation.medlabs.location.animation.defaults.HouseAnimation` instead of just `HouseAnimation`.
