@@ -116,6 +116,9 @@ How many persons of type X were infected by persons of type Y, at what day, in w
 528,"Accommodation","WorkerCountryToCity",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 ```
 
+Note that the *infected* person numbers are in the rows. 
+
+
 
 ### 4.5. dayInPersonType.csv
 
@@ -165,6 +168,157 @@ How many persons of type X were infected by persons of type Y, at what day, over
 480,"WorkerSatelliteToSatellite",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 480,"WorkerCountryToCity",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 ```
+
+Note that the *infected* person numbers are in the rows. 
+
+
+### 4.7. deadPersons.csv
+
+The information about the persons that passed away as a result of the disease in the model, with the time and location.
+
+```
+"Time(h)","personId","personType","Age","Gender","homeId","homeSubId",
+    "homeLat","homeLon","diseasePhase","workId","schoolId"
+773.3154277393338,532575,"Pensioner",69,"F",34298,0,52.05906,4.398503,"ICU",-1,-1
+774.209733322319,9795,"Pensioner",66,"M",26304,0,52.107098,4.3053493,"ICU",-1,-1
+959.5243596511704,286818,"Pensioner",76,"F",57881,2,52.07116,4.3060904,"ICU",-1,-1
+1174.9440111177717,130367,"Pensioner",65,"F",5632,1,52.058437,4.240649,"ICU",-1,-1
+1339.1079941282082,311051,"Pensioner",73,"F",63226,0,52.06339,4.2917705,"ICU",-1,-1
+1713.6640131898732,542755,"Pensioner",70,"F",36300,1,52.060974,4.413102,"ICU",-1,-1
+1819.6004898402841,516261,"Pensioner",70,"M",31361,0,52.03627,4.3563647,"ICU",-1,-1
+2684.5074032501702,406842,"Pensioner",70,"F",48899,3,52.050457,4.3018723,"ICU",-1,-1
+```
+
+
+### 4.7. deathsPerAge.csv
+
+This stores the deaths per age group for a graph or histogram per age bracket.
+
+```
+"Time(h)","0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80-89","90-99","100-109"
+1.0,0,0,0,0,0,0,0,0,0,0,0
+25.0,0,0,0,0,0,0,0,0,0,0,0
+49.0,0,0,0,0,0,0,0,0,0,0,0
+73.0,0,0,0,0,0,0,0,0,0,0,0
+97.0,0,0,0,0,0,0,0,0,0,0,0
+121.0,0,0,0,0,0,0,0,0,0,0,0
+```
+
+
+### 4.8. diseasePhaseNrs_COVID19.csv
+
+This file stores the number of people in the model who are in a certain stage of the disease, per half hour.
+
+```
+"Time(h)","Susceptible","Exposed","Infected-Asymptomatic","Infected-Symptomatic",
+    "Hospitalized","ICU","Dead","Recovered"
+800.0,547671,463,1485,1697,165,6,2,2178
+800.5,547624,508,1486,1692,165,6,2,2184
+801.0,547569,559,1486,1691,166,6,2,2188
+801.5,547513,615,1484,1689,166,6,2,2192
+802.0,547453,672,1481,1689,166,6,2,2198
+802.5,547399,724,1480,1688,165,6,2,2203
+803.0,547364,753,1482,1689,164,6,2,2207
+803.5,547347,768,1479,1688,164,6,2,2213
+804.0,547343,769,1480,1685,165,6,2,2217
+804.5,547343,766,1478,1683,165,6,2,2224
+805.0,547343,764,1476,1683,165,6,2,2228
+805.5,547343,760,1470,1683,164,6,2,2239
+806.0,547337,765,1470,1680,165,6,2,2242
+806.5,547330,770,1470,1679,165,6,2,2245
+807.0,547325,768,1473,1676,165,7,2,2251
+807.5,547324,762,1477,1678,165,7,2,2252
+808.0,547322,757,1480,1678,165,7,2,2256
+808.5,547322,752,1483,1675,165,7,2,2261
+809.0,547322,750,1480,1673,165,7,2,2268
+809.5,547322,741,1482,1677,165,7,2,2271
+810.0,547322,736,1482,1677,165,7,2,2276
+```
+
+So, 165 people are in hospital at t=810h, plus 7 in the ICU. 2276 people have recovered already.
+
+
+### 4.9. infectedPersons.csv
+
+This file provides detailed information about each person that got infected in the model. A very important piece of information is where they got infected. It includes location type (e.g., Supermarket), location Id (to see if certain location instances cause many more infections than others), and the latitude/longitude of the infection location (to plot infections on the map to identify clusters). A value of '-1' means that it is not applicable (e.g., a school id for a Worker). 
+
+```
+"Time(h)","personId","personType","Age","Gender","homeId","homeSubId","homeLat","homeLon",
+    "diseasePhase","workId","schoolId","infectLocationType","infectLocationId",
+    "infectLocationLat","infectLocationLon"
+54.15763859199399,56013,"PrimarySchoolStudent",7,"F",17720,4,52.09154,4.2586346,"Exposed",-1,142786,"Accommodation",17720,52.09154,4.2586346
+54.22628778812527,64129,"Worker",38,"F",20608,2,52.089584,4.272164,"Exposed",127809,-1,"Accommodation",20608,52.089584,4.272164
+54.279270727654556,267487,"Infant",1,"F",17105,7,52.07446,4.316811,"Exposed",-1,-1,"Accommodation",17105,52.07446,4.316811
+54.296087859071164,38442,"Worker",54,"F",24984,3,52.102962,4.269975,"Exposed",135570,-1,"Accommodation",24984,52.102962,4.269975
+54.32015594507652,70228,"Worker",21,"F",23365,1,52.09283,4.270398,"Exposed",126620,-1,"Accommodation",23365,52.09283,4.270398
+54.329999994672825,528718,"SecondarySchoolStudent",14,"M",27744,1,52.033203,4.376879,"Exposed",-1,142227,"Accommodation",27744,52.033203,4.376879
+54.4141550942418,388230,"Worker",37,"F",81501,7,52.047077,4.2852974,"Exposed",115450,-1,"Accommodation",81501,52.047077,4.2852974
+54.79831909052435,449196,"Worker",26,"F",46360,2,52.055008,4.3128386,"Exposed",124061,-1,"Accommodation",46360,52.055008,4.3128386
+56.64716276158545,204925,"Pensioner",89,"M",47723,5,52.093987,4.364346,"Exposed",-1,-1,"Accommodation",47723,52.093987,4.364346
+```
+
+
+### 4.10. infections.csv
+
+This file provides information about the person *infecting* and the person who got *infected*, as well as the location where the infection took place.
+
+```
+"Time(h)","infectiousPersonId","infectiousPersonType","infectiousPersonAge","infectiousPersonGender",
+    "infectiousPersonDiseasePhase","infectedPersonId","infectedPersonType","infectedPersonAge",
+    "infectedPersonGender","locationId","locationType"
+54.15763859199399,56011,"PrimarySchoolStudent",9,"F","Exposed",56013,"PrimarySchoolStudent",7,"F",17720,"Accommodation"
+54.22628778812527,64135,"PrimarySchoolStudent",8,"F","Exposed",64129,"Worker",38,"F",20608,"Accommodation"
+54.279270727654556,267485,"Worker",47,"F","Exposed",267487,"Infant",1,"F",17105,"Accommodation"
+54.296087859071164,38444,"Worker",21,"M","Exposed",38442,"Worker",54,"F",24984,"Accommodation"
+54.32015594507652,70227,"Pensioner",74,"F","Exposed",70228,"Worker",21,"F",23365,"Accommodation"
+```
+
+
+### 4.11. infectionsByRate.csv
+
+If a rate of infections is given using an R0 factor rather than a disease spread model, the infections are reported in this file, instead of using the files that report disease *transmission* between persons. 
+
+The reported columns look as follows:
+
+```
+"Time(h)","personId","personType","Age","Gender","homeId","homeSubId","homeLat","homeLon",
+    "diseasePhase","workId","schoolId","infLocation","duration","infRate"
+```
+
+
+
+### 4.12. infectionsByRateFactor.csv
+
+If a rate of infections is given using a rate factor compared to a reference group in the model, rather than a disease spread model, the infections are reported in this file, instead of using the files that report disease *transmission* between persons. Note that a rate factor is a factor that models the rate of spread compared to a reference group in the model where disease transmissions do take place. An example is to say: "workers outside the city follow the same pattern as workers in the city, but with an 80% chance of getting infected as compared to the workers in the city". The rate factor is 0.8 for that group. The file reports what percentage of the person type in the city has been infected as compared to the total number of citizens for that person type. 
+
+The reported columns look as follows:
+
+```
+"Time(h)","personId","personType","Age","Gender","homeId","homeSubId","homeLat","homeLon",
+    "diseasePhase","workId","schoolId","infLocation","duration","infRateFactor",
+    "refPersonType","nrInfectedRef","nrTotalRef"
+```
+
+
+### 4.13. infectionsPerAge.csv
+
+To make an age graph over time, persons have been divided into age groups spanning 10 years. Reporting is done every hour. During certain hours, e.g., the night, the change for infections is lower. 
+
+```
+"Time(h)","0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80-89","90-99","100-109"
+180.0,0,0,0,0,0,1,0,0,0,0,0
+181.0,22,11,0,1,1,0,0,0,0,0,0
+182.0,30,19,4,3,4,10,3,0,0,0,0
+183.0,1,5,3,6,20,14,6,0,0,0,0
+184.0,0,1,7,3,4,4,1,0,0,0,0
+185.0,0,0,3,2,1,1,1,0,0,0,0
+186.0,0,0,0,0,2,2,0,0,0,0,0
+187.0,1,0,0,0,0,0,0,0,0,0,0
+188.0,1,0,0,0,0,0,0,0,0,0,0
+189.0,0,0,0,0,0,0,0,0,0,0,0
+190.0,0,0,0,0,0,0,0,0,0,0,0
+```
+
 
 
 
