@@ -90,4 +90,4 @@ There are different types of activities:
 
 The entire file for all person types, disease stages, and days of the week is offered as the activity file. The columns in Excel indicate what parameters are expected in each cell. 
 
-
+In the example configuration, the file `activities/activityschedules.xlsx` gives a good indication of an overall set of activities of person types in a city.
