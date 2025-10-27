@@ -124,25 +124,25 @@ where:
 The disease progression model is an extended variant of an SEIRD model (S = Susceptible, E = Exposed, I = Infectious, R = recovered, D = died), where the stage I is split into *asymptomatic* I(A) and *symptomatic* I(S). State I(S) can lead to a hospitalized state I(H) and possibly an intensive care stay I(I). 
 
 - The transition S -> E is determined by the Transmission model
-- Probability and Duration distribution E -> I(A)
+- Probability and Duration distribution E -> I(A)<br>
   we call this the incubation period (person is not ill and not contagious) 
-- Probability and Duration distribution E -> I(S)
+- Probability and Duration distribution E -> I(S)<br>
   we call this the incubation period (person is not ill and not contagious)
-- Duration distribution I(A) -> R
+- Duration distribution I(A) -> R<br>
   we assume I(A) always leads to R
-- Probability and Duration distribution I(S) -> R
+- Probability and Duration distribution I(S) -> R<br>
   a certain percentage recovers without going to the hospital
-- Probability and Duration distribution I(S) -> I(H)
+- Probability and Duration distribution I(S) -> I(H)<br>
   a certain percentage of people gets hospitalized
-- Probability and Duration distribution I(H) -> R
+- Probability and Duration distribution I(H) -> R<br>
   a certain percentage of hospitalized people recover
-- Probability and Duration distribution I(H) -> I(I)
+- Probability and Duration distribution I(H) -> I(I)<br>
   a certain percentage of hospitalized people go to the ICU
-- Probability and Duration distribution I(H) -> D
+- Probability and Duration distribution I(H) -> D<br>
   a certain percentage of hospitalized people die
-- Probability and Duration distribution I(I) -> R
+- Probability and Duration distribution I(I) -> R<br>
   a certain percentage of people in the ICU recover
-- Probability and Duration distribution I(I) -> D
+- Probability and Duration distribution I(I) -> D<br>
   a certain percentage of people in the ICU die
 
 For all state transitions, the *probability* and *duration* is given in the disease configuration file.
