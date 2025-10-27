@@ -93,7 +93,7 @@ transport and shops might suffer since many people arrive and depart with short 
 The formula to compute whether infectious persons $j = 1 \dots N_K$ infect another person $i$ in location $K$ is:
 
 $$
-p_i = 1 - \exp\!\left(- \sum_{j=1}^{M_k}
+p_i = 1 - \exp\left(- \sum_{j=1}^{M_k}
   (1-\mu)^2 \cdot P_j(d) \cdot t_{i,j}
   \cdot \sigma\big(\max(\Delta(A_k, N_k), \psi)\big)
   \cdot \alpha
@@ -119,10 +119,54 @@ where:
 - $\alpha$ is a calibration factor
 
 
+### 3.1.3. Disease progression model
 
-### 3.1.3. Example area-based configuration file
+The disease progression model is an extended variant of an SEIRD model (S = Susceptible, E = Exposed, I = Infectious, R = recovered, D = died), where the stage I is split into *asymptomatic* I(A) and *symptomatic* I(S). State I(S) can lead to a hospitalized state I(H) and possibly an intensive care stay I(I). 
 
-In the repository, under `/src/main/resources`, there is a file called `alpha-area.properties`:
+- The transition S -> E is determined by the Transmission model
+- Probability and Duration distribution E -> I(A)
+  we call this the incubation period (person is not ill and not contagious) 
+- Probability and Duration distribution E -> I(S)
+  we call this the incubation period (person is not ill and not contagious)
+- Duration distribution I(A) -> R
+  we assume I(A) always leads to R
+- Probability and Duration distribution I(S) -> R
+  a certain percentage recovers without going to the hospital
+- Probability and Duration distribution I(S) -> I(H)
+  a certain percentage of people gets hospitalized
+- Probability and Duration distribution I(H) -> R
+  a certain percentage of hospitalized people recover
+- Probability and Duration distribution I(H) -> I(I)
+  a certain percentage of hospitalized people go to the ICU
+- Probability and Duration distribution I(H) -> D
+  a certain percentage of hospitalized people die
+- Probability and Duration distribution I(I) -> R
+  a certain percentage of people in the ICU recover
+- Probability and Duration distribution I(I) -> D
+  a certain percentage of people in the ICU die
+
+For all state transitions, the *probability* and *duration* is given in the disease configuration file.
+
+Many fractions can be given for the whole population, or with differences for subgroups:
+- single number between 0 and 1, the same fraction or probability for the entire population
+- age dependent parameter, e.g., age{0-19: 0.8, 20-55: 0.5, 56-100: 0.3}
+- gender dependent parameter, e.g., gender{M:0.45, F:0.5}
+
+Time is given as a draw from a distribution. Examples are:
+- Triangular(7,12,14), where the parameters are (min, mode, max)
+- TruncatedNormal(12.0, 2.3, 12.0, 14.0), where the parameters are (mu, sigma, min, max)
+- Constant(3)
+- Uniform(2,4)
+
+All times are in days. 
+
+
+
+### 3.1.4. Example area-based configuration file
+
+In the repository, under `/src/main/resources`, there is a file called `alpha-area.properties`. In the file, all properties start with `covidT_area`. This is the name of the GROUP under which the parameters will be stored. This group is also shown as a tab in the interactive application environment.
+
+All variables relate to the models described above. 
 
 ```
 # COVID ALPHA VARIANT
@@ -246,7 +290,7 @@ covidP.PeriodICUToRecovered = Triangular(28,30,32)
 ```
 
 
-### 3.1.4. Example distance-based configuration file
+### 3.1.5. Example distance-based configuration file
 
 In the example configuration, the file `alpha-distance.properties` is used:
 
