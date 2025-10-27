@@ -17,8 +17,8 @@ For the area-based transmission model, we try to estimate the probability that p
 
 $$
 p_i^{\text{infected}} = 1 - e^{-\sum_{j=1}^{N_K} 
-\frac{\beta \, p_B \, p_j(t_e) \, t_{i,j}}
-{\sigma_T \, A_K}}
+\frac{\beta \cdot p_B \cdot p_j(t_e) \cdot t_{i,j}}
+{\sigma_T \cdot A_K}}
 $$
 
 Since $\beta$, $p_B$, $t_{i,j}$, $\sigma_T$, and $A_K$ are constant in one calculation, the formula simplifies to:
