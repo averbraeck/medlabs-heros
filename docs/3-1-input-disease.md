@@ -6,7 +6,14 @@ The disease properties file contains all information on the disease spread. The 
 
 ### 3.1.1. Area-based transmission probability model
 
-For the area-based transmission model, we try to estimate the probability that person $i$ gets infected when zero or more infectious persons are available in that same area (an area is a sub-location of a location such as a house, workplace, school, shop, supermarket, etc.). 
+The area-based transmission is turned on in the main properties file with:
+
+```
+# whether the model is area based or distance based
+generic.diseasePropertiesModel = area
+```
+
+For the area-based transmission model, we try to estimate the probability that person $i$ gets infected when zero or more infectious persons are available in that same area (an area is a sub-location of a location such as a house, workplace, school, shop, supermarket, etc.).
 
 $$
 p_i^{\text{infected}} = 1 - e^{-\sum_{j=1}^{N_K} 
@@ -40,6 +47,8 @@ where:
 
 ---
 
+**Example"**
+
 Suppose that one infectious person and one susceptible person spend 1 hour together in a room of 10 m²,  
 with the infectiousness of person $j$ at its peak.  
 When there are no corrective measures, the formula simplifies to:
@@ -66,6 +75,186 @@ p_i = 1 - e^{-0.001} \approx 10^{-3}
 $$
 
 
+### 3.1.2. Distance-based transmission probability model
+
+The distance-based transmission is turned on in the main properties file with:
+
+```
+# whether the model is area based or distance based
+generic.diseasePropertiesModel = distance
+```
+
+For the area-based transmission model, we try to estimate the probability that person $i$ gets infected when zero or more infectious persons are available in that same area (an area is a sub-location of a location such as a house, workplace, school, shop, supermarket, etc.). 
+
+Calculate the disease spread for all persons present in this (sub)location during the 'duration' in hours. The method
+could return quickly when the delta-time is very short (e.g, less than a minute but be aware that spread in public
+transport and shops might suffer since many people arrive and depart with short intervals).<br>
+
+The formula to compute whether infectious persons $j = 1 \dots N_K$ infect another person $i$ in location $K$ is:
+
+$$
+p_i = 1 - \exp \left[
+  \sum_{j=1}^{M_k}
+  \left(
+    - (1 - \mu)^2 \;
+    P_j(d) \;
+    t_{i,j} \;
+    \sigma\!\big(
+      \max(\Delta(A_k, N_k), \psi)
+    \big)
+    \;
+    \alpha
+  \right)
+\right]
+$$
+
+where:
+
+- $k$ — the (sub)location index  
+- $i$ — the index of a susceptible person in (sub)location $k$  
+- $j$ — the index of an infectious person in (sub)location $k$  
+- $M_k$ — the number of infectious persons in (sub)location $k$  
+- $N_k$ — the number of persons in (sub)location $K$ which is of location type $T$  
+- $P_j(d)$ — the infectiousness of person $j$ for the number of days $d$ since the exposure date of person $j$;  
+  for example, infectiousness can be 0 for the first 3 days, then climb to 7 in 4 days, and then decrease to 0  
+  in about a week  
+- $\mu$ — the masking factor, between 0 (no masks) and 1 (fully protected)  
+- $t_{i,j}$ — the time that contagious person $j$ and susceptible person $i$ have spent together in location $K$ (in hours)  
+- $\sigma$ — the function that translates average distance to transmission probability  
+- $\Delta$ — the function that transforms area $A_k$ to average distance  
+- $A_k$ — the area of (sub)location $k$  
+- $\psi$ — the social distancing factor (minimum distance people keep)  
+- $\alpha$ — a calibration factor
+
+
+
+### 3.1.3. Example area-based configuration file
+
+In the repository, under `/src/main/resources`, there is a file called `alpha-area.properties`:
+
+```
+# COVID ALPHA VARIANT
+
+# COVID TRANSMISSION MODEL PARAMETERS
+# ===================================
+
+# base contagiousness parameter
+covidT_area.contagiousness = 1.0
+
+# initial variable for personal protection factor, to be multiplied with base contagiousness
+covidT_area.beta = 1.0
+
+# (t_e_min, t_e_mode, t_e_max) forms a triangular distribution indicating the viral load distribution over time
+
+# rough calculation constant to indicate first day of contagiousness of an exposed person (days)
+covidT_area.t_e_min = 2.0
+
+# rough calculation constant to indicate peak day of contagiousness of an exposed person (days)
+covidT_area.t_e_mode = 3.4
+
+# rough calculation constant to indicate last day of contagiousness of an exposed person (days)
+covidT_area.t_e_max = 9.6
+
+# threshold for the transmission calculation. Set to 1 minute (seconds)
+covidT_area.calculation_threshold = 60
+
+
+# COVID PROGRESSION MODEL PARAMETERS
+# ==================================
+
+# The transition S -> E is determined by the Transmission model
+# Probability and Duration distribution E -> I(A)     we call this the incubation period (person is not ill and not contagious) 
+# Probability and Duration distribution E -> I(S)     we call this the incubation period (person is not ill and not contagious)
+# Duration distribution I(A) -> R                     we assume I(A) always leads to R
+# Probability and Duration distribution I(S) -> R     a certain percentage recovers without going to the hospital
+# Probability and Duration distribution I(S) -> I(H)  a certain percentage of people gets hospitalized
+# Probability and Duration distribution I(H) -> R     a certain percentage of hospitalized people recover
+# Probability and Duration distribution I(H) -> I(I)  a certain percentage of hospitalized people go to the ICU
+# Probability and Duration distribution I(H) -> D     a certain percentage of hospitalized people die
+# Probability and Duration distribution I(I) -> R     a certain percentage of people in the ICU recover
+# Probability and Duration distribution I(I) -> D     a certain percentage of people in the ICU die
+
+# fraction that is asymptomatic. This can be:
+# - single number between 0 and 1
+# - age dependent parameter, e.g., age{0-19: 0.8, 20-55: 0.5, 56-100: 0.3}
+# - gender dependent parameter, e.g., gender{M:0.45, F:0.5}
+# symptomatic has a probability (1 - FractionAsymptomatic)
+covidP.FractionAsymptomatic = 0.46
+
+# incubation period Exposed to Asymptomatic E->I(A) (days) 
+# Specify as a distribution, e.g. Triangular(2,3,4) or Constant(3) or Uniform(2,4)
+covidP.IncubationPeriodAsymptomatic = Triangular(2.5, 3.4, 3.8)
+
+# incubation period Exposed to Symptomatic E->I(S) (days) 
+# Specify as a distribution, e.g. Triangular(2,3,4) or Constant(3) or Uniform(2,4)
+covidP.IncubationPeriodSymptomatic = Triangular(2.5, 3.4, 3.8)
+
+# Asymptomatic recovery period I(A)->R (days). 
+# Note that the probability is assumed to be 1 (all asymptomatic persons recover).
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodAsymptomaticToRecovered = Triangular(12, 16, 20)
+
+# fraction I(S)->I(H). This can be:
+# - single number between 0 and 1
+# - age dependent parameter, e.g., age{0-19: 0.8, 20-55: 0.5, 56-100: 0.3}
+# - gender dependent parameter, e.g., gender{M:0.45, F:0.5}
+covidP.FractionSymptomaticToHospitalized = age{0-19: 0.02153, 20-29: 0.01648, 30-39: 0.05044, 40-49: 0.11142, 50-59: 0.20593, 60-69: 0.44038, 70-79: 0.60867, 80-89: 0.32301, 90-100: 0.12687}
+
+# The fraction to recover via I(S)->R is (1 - FractionSymptomaticToHospitalized)
+
+# period I(S)->I(H) in days.
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodSymptomaticToHospitalized = Triangular(7, 9, 11)
+
+# period I(S)->R in days.
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodSymptomaticToRecovered = Triangular(12, 16, 20)
+
+# fraction I(H)->I(I). This can be:
+# - single number between 0 and 1
+# - age dependent parameter, e.g., age{0-29: 0.0, 30-50: 0.1, 51-70: 0.2, 71-80: 0.4, 81-100: 0.3}
+# - gender dependent parameter, e.g., gender{M:0.1, F:0.08}
+covidP.FractionHospitalizedToICU = age{0-19: 0.00152, 20-29: 0.00245, 30-39: 0.00921, 40-49: 0.02614, 50-59: 0.05829, 60-69: 0.14674, 70-79: 0.15508, 80-89: 0.01647, 90-100: 0}
+
+# fraction I(H)->D. This can be:
+# - single number between 0 and 1
+# - age dependent parameter, e.g., age{0-29: 0.0, 30-50: 0.1, 51-70: 0.2, 71-80: 0.4, 81-100: 0.3}
+# - gender dependent parameter, e.g., gender{M:0.1, F:0.08}
+covidP.FractionHospitalizedToDead = 0.0
+
+# The fraction I(H)->R is the "rest" fraction when neither I(H)->I(I) nor I(H)->D has been drawn
+
+# Period I(H)->I(I) in days.
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodHospitalizedToICU = Triangular(1,3,5)
+
+# Period I(H)->D in days.
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodHospitalizedToDead = Triangular(1,3,5)
+
+# Period I(H)->R in days.
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodHospitalizedToRecovered = Triangular(11,13,15)
+
+# fraction I(I)->D. This can be:
+# - single number between 0 and 1
+# - age dependent parameter, e.g., age{0-29: 0.0, 30-50: 0.1, 51-70: 0.2, 71-80: 0.4, 81-100: 0.3}
+# - gender dependent parameter, e.g., gender{M:0.1, F:0.08}
+covidP.FractionICUToDead = age{0-49: 0, 50-59: 0.01452, 60-69: 0.08393, 70-79: 0.39731, 80-89: 0.63002, 90-100: 0.67882}
+
+# The fraction I(I)->R is (1 - FractionICUToDead)
+
+# Period I(I)->D in days.
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodICUToDead = Triangular(2,4,6)
+
+# Period I(I)->R in days.
+# Specify as a distribution, e.g. Triangular(7,12,14) or TruncatedNormal(12.0, 2.3, 12.0, 14.0)
+covidP.PeriodICUToRecovered = Triangular(28,30,32)
+```
+
+
+### 3.1.4. Example distance-based configuration file
 
 In the example configuration, the file `alpha-distance.properties` is used:
 
