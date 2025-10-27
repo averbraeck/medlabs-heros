@@ -320,5 +320,46 @@ To make an age graph over time, persons have been divided into age groups spanni
 ```
 
 
+### 4.14. infectionsPerLocation.csv
 
+To make a graph of the infections per location type over time, this file reports for every hour how many locations have taken place in the past hour in that particular location type. 
+
+```
+"Time(h)","walk","bike","car","Accommodation","Workplace","Retail","Mall","BarRestaurant",
+    "FoodBeverage","Supermarket","Kindergarten","PrimarySchool","SecondarySchool","College",
+    "University","Religion","Police","FireStation","Pharmacy","Healthcare","Hospital",
+    "Recreation","Park","Satellite accommodation","Satellite workplace"
+175.0,0,0,0,79,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+176.0,0,0,0,3,1,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0
+177.0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
+178.0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,2,0,0,0
+179.0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+180.0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+181.0,0,0,0,0,0,0,0,0,0,0,4,24,6,0,1,0,0,0,0,0,0,0,0,0,0
+182.0,0,0,0,0,22,0,0,1,0,0,0,41,7,0,2,0,0,0,0,0,0,0,0,0,0
+183.0,0,0,0,1,47,0,0,1,1,1,0,2,0,0,0,0,2,0,0,0,0,0,0,0,0
+184.0,0,0,0,0,2,0,0,0,9,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+185.0,0,0,0,0,0,0,0,1,3,3,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+```
+
+
+### 4.15. locationNrPersons.csv
+
+This is a huge file (can become GB size) that gives detailed information about each and every location with the number of persons in that location, reported every hour.
+
+```
+"Time(h)","LocationNr","NrPersons"
+0.0,84347,10
+0.0,84346,10
+0.0,84345,14
+0.0,84344,12
+0.0,84343,12
+0.0,84342,1
+0.0,84341,2
+0.0,84340,2
+0.0,84339,2
+```
+
+
+### 4.16. locationTypeNrs.csv
 
