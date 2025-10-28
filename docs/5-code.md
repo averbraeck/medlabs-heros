@@ -51,9 +51,11 @@ medlabs-heros is dependent on several external libraries to function properly. T
 
 The code for medlabs-heros is on github at [https://github.com/averbraeck/medlabs-heros](https://github.com/averbraeck/medlabs-heros). In addition, the IDE will need the medlabs project, since medlabs-heros is just a thin shell around the medlabs library. All logic for running a disease simulation is in the medlabs library. 
 
-To create a project in which you can play with medlabs/medlabs-heros, install and start Elipse. In Eclipse, load both the git for medlabs and for medlabs-heros as projects:
+To create a project in which you can play with medlabs/medlabs-heros, install and start Eclipse. The first time, create a blank project at a location where you want to store the Eclipse Java project, and press `Launch`:
 
-The easiest way is to load a project is go into github for the repository. **Start with medlabs** at [https://github.com/averbraeck/medlabs](https://github.com/averbraeck/medlabs). Click on `<> Code` and use the COPY button next to the git address:
+![](images/code-eclipse.png)
+
+In Eclipse, load both the git for medlabs and for medlabs-heros as projects. The easiest way is to load a project is go into github for the repository. **Start with medlabs** at [https://github.com/averbraeck/medlabs](https://github.com/averbraeck/medlabs). Click on `<> Code` and use the COPY button next to the git address:
 
 ![](images/code-github.png)
 
