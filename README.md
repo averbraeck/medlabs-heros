@@ -25,6 +25,4 @@ This documentation explains how to run a medlabs-heros model, what configuration
 5. [Exploring and adapting the code](docs/5-code.md)
 6. [Literature](docs/6-literature.md)
 
-There is also a [separate section](docs/9-maladaptation.md) for replicating the experiment results of Sirenko, M., Verbraeck, A., & Comes, T. (2025). _On Urban Maladaptation in Times of Epidemics_ which is currently under review.
-
-
+There is also a [separate section](docs/9-maladaptation.md) dedicated to replicating the experimental results from Sirenko, M., Verbraeck, A., & Comes, T. (2025). *On Urban Maladaptation in Times of Epidemics* (currently under review). The analysis code that builds on these results is available [here](https://github.com/miskh/urban-maladaptation).
