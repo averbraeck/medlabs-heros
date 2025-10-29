@@ -2,7 +2,7 @@
 
 ## 3.8. Input files: OSM configuration
 
-This file is only important for the interactive simulation, and can be left blank in a batch simulation. The file indicates what OSM nodes, ways and relations are plotted on the map, in which order, and with which color. An eample is:
+This file is only important for the interactive simulation, and can be left blank in a batch simulation. The file indicates what OSM nodes, ways and relations are plotted on the map, in which order, and with which color. An example is:
 
 ```
 layerName,key,value,outlineColor,fillColor,display,transform

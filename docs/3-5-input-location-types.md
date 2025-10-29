@@ -33,7 +33,7 @@ Satellite accommodation,SatelliteAccAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1
 Satellite workplace,SatelliteWorkAnimation,FALSE,FALSE,FALSE,1,1,FALSE,0.25,1.0
 ```
 
-The file was a bit shortened for readability; for the `animationClass`, typically the full path is given: `nl.tudelft.simulation.medlabs.location.animation.defaults.HouseAnimation` instead of just `HouseAnimation`.
+The above example location type configuration file was a bit shortened for readability; for the `animationClass`, typically the full path is given: `nl.tudelft.simulation.medlabs.location.animation.defaults.HouseAnimation` instead of just `HouseAnimation`.
 
 The following columns are present in the file:
 
